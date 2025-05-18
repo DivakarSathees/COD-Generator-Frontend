@@ -1,0 +1,16 @@
+.mcq-card-container {
+    margin-top: 2rem;
+  }
+  
+  .mcq-card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    background: #f9f9f9;
+  }
+  
+  .mcq-card button {
+    margin-right: 1rem;
+  }
+  

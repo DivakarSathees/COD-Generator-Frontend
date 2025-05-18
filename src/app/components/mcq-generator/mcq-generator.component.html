@@ -1,0 +1,88 @@
+<div class="mcq-generator-container">
+    <h2>MCQ Generator</h2>
+  
+    <label>
+      <input type="radio" name="mode" value="form" [(ngModel)]="mode" />
+      Use Form
+    </label>
+    <label>
+      <input type="radio" name="mode" value="prompt" [(ngModel)]="mode" />
+      Use Custom Prompt
+    </label>
+  
+    <form *ngIf="mode === 'form'" [formGroup]="mcqForm" (ngSubmit)="generateFromForm()">
+      <div>
+        <label>Question Count:</label>
+        <input type="number" formControlName="question_count" />
+      </div>
+  
+      <div>
+        <label>Options Count:</label>
+        <input type="number" formControlName="options_count" />
+      </div>
+  
+      <div>
+        <label>Difficulty Level:</label>
+        <select formControlName="difficulty_level">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+  
+      <div>
+        <label>Topic:</label>
+        <input type="text" formControlName="topic" />
+      </div>
+
+      <div>
+        <label>Token:</label>
+        <input type="text" formControlName="token" />
+      </div>
+  
+      <button type="submit" [disabled]="loading || mcqForm.invalid">
+        {{ loading ? 'Generating...' : 'Generate MCQs' }}
+      </button>
+    </form>
+  
+    <form *ngIf="mode === 'prompt'" (ngSubmit)="generateFromPrompt()">
+      <label>Enter Custom Prompt:</label>
+      <textarea [(ngModel)]="customPrompt" name="prompt" rows="6" cols="60" required></textarea>
+      <br />
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Generating...' : 'Generate MCQs' }}
+      </button>
+    </form>
+
+
+  
+    <div *ngIf="error" class="error">{{ error }}</div>
+  
+    <div *ngIf="mcqs.length > 0">
+      <!-- <h3>Generated MCQs:</h3>
+      <pre>{{ mcqs | json }}</pre> -->
+      <div class="mcq-card-container" *ngIf="mcqs.length > 0">
+        <h2>Generated MCQs</h2>
+        <button (click)="uploadAllQuestion(mcqs)">📤 Upload All</button>
+      
+        <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
+
+          <h4>Q{{ i + 1 }}. {{ mcq.question_data }}</h4>
+      
+          <ul>
+            <li *ngFor="let opt of mcq.options">
+              {{ opt.text }}
+            </li>
+          </ul>
+      
+          <p><strong>Correct Answer:</strong> {{ mcq.answer.args[0] }}</p>
+          <p><strong>Difficulty:</strong> {{ mcq.manual_difficulty }}</p>
+      
+          <button (click)="verifyQuestion(mcq)">✅ Verify</button>
+          <button (click)="uploadQuestion(mcq)">📤 Upload</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
