@@ -24,6 +24,7 @@ export class McqGeneratorComponent {
       question_count: [5, Validators.required],
       options_count: [4, Validators.required],
       difficulty_level: ['Easy', Validators.required],
+      code_snippet: [0, Validators.required],
       topic: ['', Validators.required],
       token: [''], // Token for authentication
     });
@@ -70,6 +71,13 @@ export class McqGeneratorComponent {
       mcq.options.length === 4 &&
       mcq.answer.args.length === 1 &&
       mcq.options.some((opt: { text: any; }) => opt.text === mcq.answer.args[0]);
+
+    // check there is no duplicate options
+    const optionsSet = new Set(mcq.options.map((opt: { text: any; }) => opt.text));
+    if (optionsSet.size !== mcq.options.length) {
+      alert('❌ Duplicate options found.');
+      return;
+    }
   
     if (isValid) {
       const payload = {
@@ -101,6 +109,8 @@ export class McqGeneratorComponent {
 
   uploadQuestion(mcq: any) {
     console.log(mcq);
+    // set difficulty level to easy
+    mcq.difficulty_level = mcq.difficulty_level || mcq.difficulty || 'Easy';
     
     this.loading = true;
     this.error = '';

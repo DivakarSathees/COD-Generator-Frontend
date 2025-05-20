@@ -29,6 +29,15 @@
           <option value="Hard">Hard</option>
         </select>
       </div>
+
+      <!-- drop down for whether it si code snippet based or not -->
+      <div>
+        <label>Code Snippet Based:</label>
+        <select formControlName="code_snippet">
+          <option value=1>Yes</option>
+          <option value=0>No</option>
+        </select>
+      </div>
   
       <div>
         <label>Topic:</label>
@@ -48,6 +57,13 @@
     <form *ngIf="mode === 'prompt'" (ngSubmit)="generateFromPrompt()">
       <label>Enter Custom Prompt:</label>
       <textarea [(ngModel)]="customPrompt" name="prompt" rows="6" cols="60" required></textarea>
+      <div>
+        <label>Code Snippet Based:</label>
+        <select formControlName="code_snippet">
+          <option value=1>Yes</option>
+          <option value=0>No</option>
+        </select>
+      </div>
       <br />
       <button type="submit" [disabled]="loading">
         {{ loading ? 'Generating...' : 'Generate MCQs' }}
@@ -65,7 +81,7 @@
         <h2>Generated MCQs</h2>
         <button (click)="uploadAllQuestion(mcqs)">📤 Upload All</button>
       
-        <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
+        <!-- <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
 
           <h4>Q{{ i + 1 }}. {{ mcq.question_data }}</h4>
       
@@ -76,11 +92,49 @@
           </ul>
       
           <p><strong>Correct Answer:</strong> {{ mcq.answer.args[0] }}</p>
-          <p><strong>Difficulty:</strong> {{ mcq.manual_difficulty }}</p>
+          <p><strong>Difficulty:</strong> {{ mcq.manual_difficulty || mcq.difficulty }}</p>
       
           <button (click)="verifyQuestion(mcq)">✅ Verify</button>
           <button (click)="uploadQuestion(mcq)">📤 Upload</button>
-        </div>
+        </div> -->
+
+        <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
+
+  <label><strong>Q{{ i + 1 }}.</strong></label>
+  <textarea [(ngModel)]="mcq.question_data" rows="2" class="editable-textarea"></textarea>
+
+  <ul>
+    <li *ngFor="let opt of mcq.options; let j = index">
+      <input
+        type="text"
+        [(ngModel)]="mcq.options[j].text"
+        placeholder="Option {{ j + 1 }}"
+        class="editable-input"
+      />
+    </li>
+  </ul>
+
+  <label><strong>Correct Answer:</strong></label>
+  <input
+    type="text"
+    [(ngModel)]="mcq.answer.args[0]"
+    placeholder="Correct Answer"
+    class="editable-input"
+  />
+
+  <label><strong>Difficulty:</strong></label>
+  <select [(ngModel)]="mcq.manual_difficulty" class="editable-select">
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
+
+  <div class="button-group">
+    <button (click)="verifyQuestion(mcq)">✅ Verify</button>
+    <button (click)="uploadQuestion(mcq)">📤 Upload</button>
+  </div>
+</div>
+
       </div>
       
     </div>
