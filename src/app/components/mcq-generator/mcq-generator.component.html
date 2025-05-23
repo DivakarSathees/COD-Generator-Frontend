@@ -1,3 +1,5 @@
+
+
 <div class="mcq-generator-container">
     <h2>MCQ Generator</h2>
   
@@ -71,8 +73,10 @@
     </form>
 
 
-  
+    <!-- <ngx-monaco-editor></ngx-monaco-editor> -->
+
     <div *ngIf="error" class="error">{{ error }}</div>
+    <!-- <ngx-monaco-editor class="textEditorContainer" [options]="editorOptions" [(ngModel)]="userCode" (init)="editorInit($event)"></ngx-monaco-editor> -->
   
     <div *ngIf="mcqs.length > 0">
       <!-- <h3>Generated MCQs:</h3>
@@ -100,12 +104,26 @@
 
         <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
 
-  <label><strong>Q{{ i + 1 }}.</strong></label>
-  <textarea [(ngModel)]="mcq.question_data" rows="2" class="editable-textarea"></textarea>
+  <label><strong>Q{{ i + 1 }}.</strong></label><br>
+  <!-- <textarea 
+  style="width: 560px; height: 117px;"
+  [(ngModel)]="mcq.question_data" rows="2" class="editable-textarea"></textarea> -->
+
+  <!-- <label>Question:</label><br> -->
+  <textarea
+    style="width: 560px; height: 36;"
+  [(ngModel)]="mcqs[i].questionText" rows="3" class="editable-textarea"></textarea><br>
+
+  <label *ngIf="mcqs[i].codeSnippet">Code Snippet:</label>
+  <!-- <ngx-monaco-editor [(ngModel)]="mcqs[i].codeSnippet" style="height: 300px;"></ngx-monaco-editor> -->
+  <div *ngIf="mcqs[i].codeSnippet" style="height: 132px;">
+      <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="mcqs[i].codeSnippet"></ngx-monaco-editor>
+  </div>
 
   <ul>
     <li *ngFor="let opt of mcq.options; let j = index">
       <input
+        style="width: 560px;"
         type="text"
         [(ngModel)]="mcq.options[j].text"
         placeholder="Option {{ j + 1 }}"
@@ -130,8 +148,8 @@
   </select>
 
   <div class="button-group">
-    <button (click)="verifyQuestion(mcq)">✅ Verify</button>
-    <button (click)="uploadQuestion(mcq)">📤 Upload</button>
+    <button (click)="verifySplitQuestion(mcq)">✅ Verify</button>
+    <button (click)="uploadSplitQuestion(mcq)">📤 Upload</button>
   </div>
 </div>
 

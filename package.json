@@ -17,6 +17,9 @@
     "@angular/platform-browser": "^19.2.0",
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@materia-ui/ngx-monaco-editor": "^6.0.0",
+    "monaco-editor": "^0.52.2",
+    "ngx-monaco-editor-v2": "^19.0.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

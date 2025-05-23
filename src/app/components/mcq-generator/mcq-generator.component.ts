@@ -1,16 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { McqServiceService } from '../../services/mcq-service.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { MonacoEditorModule, MONACO_PATH, MonacoEditorComponent, MonacoEditorConstructionOptions, MonacoStandaloneCodeEditor } from '@materia-ui/ngx-monaco-editor';
+import { editor } from 'monaco-editor';
 
 @Component({
   selector: 'app-mcq-generator',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, MonacoEditorModule],
+	// providers: [{
+	// 	provide: MONACO_PATH,
+	// 	useValue: 'https://unpkg.com/monaco-editor@0.20.0/min/vs'
+	// }],
   templateUrl: './mcq-generator.component.html',
   styleUrl: './mcq-generator.component.css'
 })
-export class McqGeneratorComponent {
+export class McqGeneratorComponent implements OnInit {
+  ngOnInit() {
+   
+  }
   mcqForm: FormGroup;
   mcqs: any[] = [];
   loading = false;
@@ -18,6 +27,9 @@ export class McqGeneratorComponent {
   customPrompt = '';
   mode: 'form' | 'prompt' = 'form';
   token: any;
+  // editorOptions = { theme: 'vs-dark', language: 'java' };
+  editorOptions = {theme: 'vs-dark', language: 'csharp'};
+  code: string= '';
 
   constructor(private fb: FormBuilder, private mcqService: McqServiceService) {
     this.mcqForm = this.fb.group({
@@ -30,20 +42,46 @@ export class McqGeneratorComponent {
     });
   }
 
+  getQuestionText(fullText: string): string {
+    return fullText?.split('$$$examly')[0]?.trim() || '';
+  }
+
+  getCodeSnippet(fullText: string): string {
+    return fullText?.split('$$$examly')[1]?.trim() || '';
+  }
+
+  combineQuestionAndCode(question: string, code: string): string {
+    if (code) {
+      return `${question}$$$examly${code}`;
+    } else {
+      return question;
+    }
+  }
+
   generateFromForm() {
     this.loading = true;
     this.error = '';
     const payload = this.mcqForm.value;
 
     this.mcqService.generateMcqs(payload).subscribe({
+      // next: (res: any) => {
+      //   this.mcqs = res.response;
+      //   this.loading = false;
+      // },
+      // error: (err) => {
+      //   this.error = 'Something went wrong';
+      //   this.loading = false;
+      // },
       next: (res: any) => {
-        this.mcqs = res.response;
+      this.mcqs = res.response.map((mcq: any) => ({
+          ...mcq,
+          questionText: this.getQuestionText(mcq.question_data),
+          codeSnippet: this.getCodeSnippet(mcq.question_data)
+        }));
         this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Something went wrong';
-        this.loading = false;
-      },
+        console.log(this.mcqs);
+        
+      }
     });
   }
 
@@ -53,16 +91,37 @@ export class McqGeneratorComponent {
     const payload = { prompt: this.customPrompt };
 
     this.mcqService.generateMcqs(payload).subscribe({
+      // next: (res: any) => {
+      //   this.mcqs = res.response;
+      //   this.loading = false;
+      // },
+      // error: (err) => {
+      //   this.error = 'Something went wrong';
+      //   this.loading = false;
+      // },
       next: (res: any) => {
-        this.mcqs = res.response;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Something went wrong';
-        this.loading = false;
-      },
+      this.mcqs = res.response.map((mcq: any) => ({
+        ...mcq,
+        questionText: this.getQuestionText(mcq.question_data),
+        codeSnippet: this.getCodeSnippet(mcq.question_data)
+      }));
+      console.log(this.mcqs);
+      
+      this.loading = false;
+    }
     });
   }
+
+  verifySplitQuestion(mcq: any) {
+    mcq.question_data = this.combineQuestionAndCode(mcq.questionText, mcq.codeSnippet);
+    this.verifyQuestion(mcq);
+  }
+
+  uploadSplitQuestion(mcq: any) {
+    mcq.question_data = this.combineQuestionAndCode(mcq.questionText, mcq.codeSnippet);
+    this.uploadQuestion(mcq);
+  }
+
 
   verifyQuestion(mcq: any) {
     // Simple check for one correct answer and valid format
