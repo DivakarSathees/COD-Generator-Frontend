@@ -113,12 +113,29 @@
   <textarea
     style="width: 560px; height: 36;"
   [(ngModel)]="mcqs[i].questionText" rows="3" class="editable-textarea"></textarea><br>
+  <!-- Remove Code snippet toggle -->
+  <button *ngIf="mcqs[i].codeSnippet" (click)="mcqs[i].codeVisible = !mcqs[i].codeVisible" style="margin-bottom: 8px;">
+    {{ mcqs[i].codeVisible ? 'Hide Code Snippet' : 'Show Code Snippet' }}
+  </button>
+  
 
-  <label *ngIf="mcqs[i].codeSnippet">Code Snippet:</label>
+  <label *ngIf="mcqs[i].codeVisible">Code Snippet:</label>
   <!-- <ngx-monaco-editor [(ngModel)]="mcqs[i].codeSnippet" style="height: 300px;"></ngx-monaco-editor> -->
-  <div *ngIf="mcqs[i].codeSnippet" style="height: 132px;">
+  <div *ngIf="mcqs[i].codeVisible" style="height: 132px;">
       <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="mcqs[i].codeSnippet"></ngx-monaco-editor>
+      <!-- button to run code -->
+      
   </div>
+  <button *ngIf="mcqs[i].codeSnippet" (click)="runCode(mcqs[i].codeSnippet, i)" >Run Code</button>
+      <div *ngIf="mcqs[i].codeOutput && !outputerror" class="code-output">
+        <strong>Output:</strong>
+        <pre>{{ mcqs[i]['codeOutput'] }}</pre>
+      </div>
+      <div *ngIf="mcqs[i].outputerror" class="code-output">
+        <strong>Error:</strong>
+        <pre>{{mcqs[i].outputerror}}</pre>
+      </div>
+
 
   <ul>
     <li *ngFor="let opt of mcq.options; let j = index">

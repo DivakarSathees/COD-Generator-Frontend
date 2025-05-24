@@ -22,4 +22,8 @@ export class McqServiceService {
   uploadMcqs(data: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/upload-to-platform`, data);
   }
+
+  runCode(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/run-code`, data);
+  }
 }
