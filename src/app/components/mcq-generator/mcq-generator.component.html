@@ -50,7 +50,24 @@
         <label>Token:</label>
         <input type="text" formControlName="token" />
       </div>
+
+      <!-- creat by name with drop down -->
+      <div>
+        <label>Creator Name:</label>
+        <select formControlName="createdBy">
+          <option value="" disabled selected>Select Creator</option>
+          <option value="bd3c2f4d-b53d-4de6-82c9-00413b70756c">Divakar</option>
+          <option value="2b1611eb-f067-4592-a21e-0917d6fc59ae">Velan</option>
+        </select>
+      </div>
+
+      <!-- qb_id -->
+      <div>
+        <label>Question Bank ID:</label>
+        <input type="text" formControlName="qb_id" />
+      </div>
   
+
       <button type="submit" [disabled]="loading || mcqForm.invalid">
         {{ loading ? 'Generating...' : 'Generate MCQs' }}
       </button>
@@ -83,7 +100,7 @@
       <pre>{{ mcqs | json }}</pre> -->
       <div class="mcq-card-container" *ngIf="mcqs.length > 0">
         <h2>Generated MCQs</h2>
-        <button (click)="uploadAllQuestion(mcqs)">📤 Upload All</button>
+        <button (click)="uploadAllQuestion(mcqs)">{{ uploading ?  '🏃‍➡️ Uploading...' : '📤 Upload All' }}</button>
       
         <!-- <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
 
@@ -102,7 +119,19 @@
           <button (click)="uploadQuestion(mcq)">📤 Upload</button>
         </div> -->
 
-        <div *ngFor="let mcq of mcqs; let i = index" class="mcq-card">
+        <div
+  *ngFor="let mcq of mcqs; let i = index"
+  class="mcq-card"
+  [ngStyle]="{
+    'border-left': mcq.manual_difficulty === 'Hard' ? '5px solid #f56565' :
+                   mcq.manual_difficulty === 'Medium' ? '5px solid #ed8936' :
+                   '5px solid #48bb78',
+    'background-color': mcq.manual_difficulty === 'Hard' ? '#ffe5e5' :
+                        mcq.manual_difficulty === 'Medium' ? '#fff3e0' :
+                        '#f0fff4'
+  }"
+>
+
 
   <label><strong>Q{{ i + 1 }}.</strong></label><br>
   <!-- <textarea 
@@ -115,18 +144,38 @@
   [(ngModel)]="mcqs[i].questionText" rows="3" class="editable-textarea"></textarea><br>
   <!-- Remove Code snippet toggle -->
   <button *ngIf="mcqs[i].codeSnippet" (click)="mcqs[i].codeVisible = !mcqs[i].codeVisible" style="margin-bottom: 8px;">
-    {{ mcqs[i].codeVisible ? 'Hide Code Snippet' : 'Show Code Snippet' }}
+    {{ mcqs[i].codeVisible ? '🔒 Hide Code Snippet' : '🔓 Show Code Snippet' }}
   </button>
   
 
-  <label *ngIf="mcqs[i].codeVisible">Code Snippet:</label>
+  <!-- <label *ngIf="mcqs[i].codeVisible">Code Snippet:</label><br> -->
+  <!-- dropdown with languages -->
+  <select *ngIf="mcqs[i].codeVisible" [(ngModel)]="mcqs[i].language" class="editable-select"
+  style="width: fit-content;"
+  >
+    <option value="" disabled selected>Select Language</option>
+    <option value="python">Python</option>
+    <option value="javascript">JavaScript</option>
+    <option value="java">Java</option>
+    <option value="c">C</option>
+    <option value="cpp">C++</option>
+    <option value="csharp">C#</option>
+    <option value="ruby">Ruby</option>
+    <option value="go">Go</option>
+    <option value="typescript">TypeScript</option>
+    <option value="kotlin">Kotlin</option>
+    <option value="php">PHP</option>
+    <option value="bash">Bash</option>
+    </select> 
   <!-- <ngx-monaco-editor [(ngModel)]="mcqs[i].codeSnippet" style="height: 300px;"></ngx-monaco-editor> -->
   <div *ngIf="mcqs[i].codeVisible" style="height: 132px;">
       <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="mcqs[i].codeSnippet"></ngx-monaco-editor>
       <!-- button to run code -->
       
   </div>
-  <button *ngIf="mcqs[i].codeSnippet" (click)="runCode(mcqs[i].codeSnippet, i)" >Run Code</button>
+  <button [disabled]="mcq.runcode" *ngIf="mcqs[i].codeVisible" (click)="runCode(mcqs[i].codeSnippet, i, mcqs[i].language, mcq)">{{ mcq.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button>
+  <!-- button to clear the output -->
+  <button *ngIf="mcqs[i].codeOutput" (click)="mcqs[i].codeOutput=''">🧹 Clear Output</button>
       <div *ngIf="mcqs[i].codeOutput && !outputerror" class="code-output">
         <strong>Output:</strong>
         <pre>{{ mcqs[i]['codeOutput'] }}</pre>
@@ -139,23 +188,23 @@
 
   <ul>
     <li *ngFor="let opt of mcq.options; let j = index">
-      <input
+      <textarea
         style="width: 560px;"
         type="text"
         [(ngModel)]="mcq.options[j].text"
         placeholder="Option {{ j + 1 }}"
-        class="editable-input"
-      />
+        class="editable-textarea"
+      ></textarea>
     </li>
   </ul>
 
   <label><strong>Correct Answer:</strong></label>
-  <input
+  <textarea
     type="text"
     [(ngModel)]="mcq.answer.args[0]"
     placeholder="Correct Answer"
-    class="editable-input"
-  />
+    class="editable-textarea"
+  ></textarea>
 
   <label><strong>Difficulty:</strong></label>
   <select [(ngModel)]="mcq.manual_difficulty" class="editable-select">
@@ -165,8 +214,8 @@
   </select>
 
   <div class="button-group">
-    <button (click)="verifySplitQuestion(mcq)">✅ Verify</button>
-    <button (click)="uploadSplitQuestion(mcq)">📤 Upload</button>
+    <button  [disabled]="mcq.verify" (click)="verifySplitQuestion(mcq)">{{ mcq.verify ? 'Verifing' : '✅ Verify' }}</button>
+    <button  [disabled]="mcq.upload" (click)="uploadSplitQuestion(mcq)">{{ mcq.upload ? 'Uploaded' : '📤 Upload' }}</button>
   </div>
 </div>
 
