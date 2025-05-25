@@ -119,6 +119,24 @@
           <button (click)="uploadQuestion(mcq)">📤 Upload</button>
         </div> -->
 
+        <select [(ngModel)]="language" class="editable-select"
+  style="width: fit-content;"
+  >
+    <option value="" disabled selected>Select Language</option>
+    <option value="python">Python</option>
+    <option value="javascript">JavaScript</option>
+    <option value="java">Java</option>
+    <option value="c">C</option>
+    <option value="cpp">C++</option>
+    <option value="csharp">C#</option>
+    <option value="ruby">Ruby</option>
+    <option value="go">Go</option>
+    <option value="typescript">TypeScript</option>
+    <option value="kotlin">Kotlin</option>
+    <option value="php">PHP</option>
+    <option value="bash">Bash</option>
+    </select> 
+
         <div
   *ngFor="let mcq of mcqs; let i = index"
   class="mcq-card"
@@ -150,7 +168,7 @@
 
   <!-- <label *ngIf="mcqs[i].codeVisible">Code Snippet:</label><br> -->
   <!-- dropdown with languages -->
-  <select *ngIf="mcqs[i].codeVisible" [(ngModel)]="mcqs[i].language" class="editable-select"
+  <!-- <select *ngIf="mcqs[i].codeVisible" [(ngModel)]="mcqs[i].language" class="editable-select"
   style="width: fit-content;"
   >
     <option value="" disabled selected>Select Language</option>
@@ -166,14 +184,14 @@
     <option value="kotlin">Kotlin</option>
     <option value="php">PHP</option>
     <option value="bash">Bash</option>
-    </select> 
+    </select>  -->
   <!-- <ngx-monaco-editor [(ngModel)]="mcqs[i].codeSnippet" style="height: 300px;"></ngx-monaco-editor> -->
   <div *ngIf="mcqs[i].codeVisible" style="height: 132px;">
       <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="mcqs[i].codeSnippet"></ngx-monaco-editor>
       <!-- button to run code -->
       
   </div>
-  <button [disabled]="mcq.runcode" *ngIf="mcqs[i].codeVisible" (click)="runCode(mcqs[i].codeSnippet, i, mcqs[i].language, mcq)">{{ mcq.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button>
+  <button [disabled]="mcq.runcode" *ngIf="mcqs[i].codeVisible" (click)="runCode(mcqs[i].codeSnippet, i, mcq)">{{ mcq.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button>
   <!-- button to clear the output -->
   <button *ngIf="mcqs[i].codeOutput" (click)="mcqs[i].codeOutput=''">🧹 Clear Output</button>
       <div *ngIf="mcqs[i].codeOutput && !outputerror" class="code-output">

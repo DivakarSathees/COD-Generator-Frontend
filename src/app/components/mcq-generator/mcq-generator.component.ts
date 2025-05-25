@@ -30,6 +30,7 @@ export class McqGeneratorComponent implements OnInit {
   outputerror = '';
   customPrompt = '';
   mode: 'form' | 'prompt' = 'form';
+  language = '';
   token: any;
   // editorOptions = { theme: 'vs-dark', language: 'java' };
   editorOptions = {theme: 'vs-dark', language: 'csharp'};
@@ -157,7 +158,7 @@ export class McqGeneratorComponent implements OnInit {
     //   alert('❌ Please enter a token to upload the question.');
     //   return;
     // }
-    this.uploading = true;
+    // this.uploading = true;
     mcq.question_data = this.combineQuestionAndCode(mcq.questionText, mcq.codeSnippet, mcq.codeVisible);
     this.uploadQuestion(mcq);
   }
@@ -327,19 +328,19 @@ export class McqGeneratorComponent implements OnInit {
     });
   }
 
-  runCode(code: string, index: number, language: string, mcq: any): void {
+  runCode(code: string, index: number, mcq: any): void {
     mcq.runcode = true;
     // This method can be used to run the code snippet if needed
 
     // For now, we will just log the code to the console
-    if(!language){
+    if(!this.language){
       mcq.runcode = false;
       alert('❌ Please select a language.');
       return;
     }
     const payload = {
       code_snippet: code,
-      language: language
+      language: this.language
       };
     this.mcqService.runCode(payload).subscribe({
       next: (res: any) => {
