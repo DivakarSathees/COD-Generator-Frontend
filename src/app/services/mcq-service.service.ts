@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class McqServiceService {
 
-  private apiUrl = 'http://localhost:3000'; // adjust as needed
+  // private apiUrl = 'http://localhost:3000'; // adjust as needed
+  private apiUrl = 'https://mcq-generator-pixe.onrender.com'; // adjust as needed
 
   constructor(private http: HttpClient) {}
 
