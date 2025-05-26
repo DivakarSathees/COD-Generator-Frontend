@@ -52,14 +52,14 @@
       </div>
 
       <!-- creat by name with drop down -->
-      <div>
+      <!-- <div>
         <label>Creator Name:</label>
         <select formControlName="createdBy">
           <option value="" disabled selected>Select Creator</option>
           <option value="bd3c2f4d-b53d-4de6-82c9-00413b70756c">Divakar</option>
           <option value="2b1611eb-f067-4592-a21e-0917d6fc59ae">Velan</option>
         </select>
-      </div>
+      </div> -->
 
       <!-- qb_id -->
       <div>
@@ -73,15 +73,23 @@
       </button>
     </form>
   
-    <form *ngIf="mode === 'prompt'" (ngSubmit)="generateFromPrompt()">
+    <form *ngIf="mode === 'prompt'" [formGroup]="promptForm" (ngSubmit)="generateFromPrompt()">
       <label>Enter Custom Prompt:</label>
-      <textarea [(ngModel)]="customPrompt" name="prompt" rows="6" cols="60" required></textarea>
+      <textarea formControlName="prompt" name="prompt" rows="6" cols="60" required></textarea>
       <div>
         <label>Code Snippet Based:</label>
         <select formControlName="code_snippet">
           <option value=1>Yes</option>
           <option value=0>No</option>
         </select>
+      </div>
+      <div>
+        <label>Token:</label>
+        <input type="text" formControlName="token" />
+      </div>
+      <div>
+        <label>Question Bank ID:</label>
+        <input type="text" formControlName="qb_id" />
       </div>
       <br />
       <button type="submit" [disabled]="loading">
@@ -119,7 +127,45 @@
           <button (click)="uploadQuestion(mcq)">📤 Upload</button>
         </div> -->
 
-        <select [(ngModel)]="language" class="editable-select"
+        
+
+<form class="topic" [formGroup]="mcqForm">
+  <div class="form-group1">
+    <label for="subtopic">Subtopic</label>
+    <ng-select
+      [items]="subtopics"
+      bindLabel="name"
+      bindValue="sub_topic_id"
+      formControlName="sub_topic_id"
+      [searchable]="true"
+      [searchFn]="customSearchFn"
+      (change)="onSubtopicChangeById($event.sub_topic_id)">
+      <ng-template ng-option-tmp let-item="item">
+        {{ item.name }} - {{ item.topic.name }} - {{ item.topic.subject.name }}
+      </ng-template>
+
+      <!-- Custom display in selected item -->
+      <ng-template class="options-ng" ng-label-tmp let-item="item">
+        {{ item.name }} - {{ item.topic.name }} - {{ item.topic.subject.name }}
+      </ng-template>
+    </ng-select>
+  </div>
+
+  <!-- Topic -->
+   <div class="form-group2">
+  <div class="form-group1">
+    <label for="topic_name">Topic</label>
+    <input type="text" formControlName="topic_name" readonly />
+  </div><br>
+
+  <!-- Subject -->
+  <div class="form-group1">
+    <label for="subject_name">Subject</label>
+    <input type="text" formControlName="subject_name" readonly />
+  </div>
+   </div>
+</form>
+<select [(ngModel)]="language" class="editable-select"
   style="width: fit-content;"
   >
     <option value="" disabled selected>Select Language</option>

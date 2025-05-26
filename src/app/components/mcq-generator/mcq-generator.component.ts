@@ -5,10 +5,12 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { MonacoEditorModule, MONACO_PATH, MonacoEditorComponent, MonacoEditorConstructionOptions, MonacoStandaloneCodeEditor } from '@materia-ui/ngx-monaco-editor';
 import { editor, languages } from 'monaco-editor';
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 @Component({
   selector: 'app-mcq-generator',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, MonacoEditorModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, MonacoEditorModule, NgSelectModule ],
 	// providers: [{
 	// 	provide: MONACO_PATH,
 	// 	useValue: 'https://unpkg.com/monaco-editor@0.20.0/min/vs'
@@ -20,7 +22,10 @@ export class McqGeneratorComponent implements OnInit {
   ngOnInit() {
    
   }
+  subtopics: any[] = [];
+
   mcqForm: FormGroup;
+  promptForm: FormGroup;
   mcqs: any[] = [];
   loading = false;
   verifing = false;
@@ -43,10 +48,22 @@ export class McqGeneratorComponent implements OnInit {
       difficulty_level: ['Easy', Validators.required],
       code_snippet: [0, Validators.required],
       topic: ['', Validators.required],
-      token: [''], // Token for authentication
+      token: ['', Validators.required ], // Token for authentication
       qb_id: [''], // Question bank ID
-      createdBy: [''], // Creator's name or ID
+      // createdBy: [''], // Creator's name or ID
       // codeOutput: [''], // Output for code execution
+      sub_topic_id: [''],
+      topic_id: [''],
+      subject_id: [''],
+      topic_name: [''],
+      subject_name: [''],
+    });
+
+    this.promptForm = this.fb.group({
+      prompt: ['', Validators.required],
+      token: ['', Validators.required], // Token for authentication
+      qb_id: [''], // Question bank ID
+      code_snippet: [0, Validators.required],
     });
   }
 
@@ -72,14 +89,6 @@ export class McqGeneratorComponent implements OnInit {
     const payload = this.mcqForm.value;
 
     this.mcqService.generateMcqs(payload).subscribe({
-      // next: (res: any) => {
-      //   this.mcqs = res.response;
-      //   this.loading = false;
-      // },
-      // error: (err) => {
-      //   this.error = 'Something went wrong';
-      //   this.loading = false;
-      // },
       next: (res: any) => {
       this.mcqs = res.response.map((mcq: any) => ({
           ...mcq,
@@ -100,12 +109,89 @@ export class McqGeneratorComponent implements OnInit {
         this.loading = false;
       },
     });
+
+    // call the getTopics() method to fetch topics
+    this.mcqService.getTopics(this.mcqForm.value.token).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.subtopics = res.data;
+
+      if (this.subtopics.length > 0) {
+        const first = this.subtopics[0];
+        this.mcqForm.patchValue({
+          sub_topic_id: first.sub_topic_id,
+          topic_id: first.topic.topic_id,
+          subject_id: first.topic.subject.subject_id,
+          topic_name: first.topic.name,
+          subject_name: first.topic.subject.name,
+
+        });
+      }
+      console.log(this.mcqForm.value);
+      
+      },
+      error: (err) => {
+        console.error('Error fetching topics:', err);
+      },
+    });
   }
+
+  customSearchFn = (term: string, item: any) => {
+  const lowerTerm = term.toLowerCase();
+  return (
+    item.name.toLowerCase().includes(lowerTerm) ||
+    item.topic.name.toLowerCase().includes(lowerTerm) ||
+    item.topic.subject.name.toLowerCase().includes(lowerTerm) 
+  );
+};
+
+  onSubtopicChangeById(event: Event) {
+    console.log(event);
+    
+  //   const selectElement = event.target as HTMLSelectElement;
+  // const selectedSubtopicId = selectElement.value;
+  // console.log('subtopic changed', selectedSubtopicId);
+  
+  const selected = this.subtopics.find(
+    (s) => s.sub_topic_id === event
+  );
+
+  if (selected) {
+    this.mcqForm.patchValue({
+      sub_topic_id: selected.sub_topic_id,
+      topic_id: selected.topic.topic_id,
+      subject_id: selected.topic.subject.subject_id,
+      topic_name: selected.topic.name,
+      subject_name: selected.topic.subject.name,
+    });
+  }
+}
+
+
+  onSubtopicChange(event: Event) {
+  const selectElement = event.target as HTMLSelectElement;
+  const selectedSubtopicId = selectElement.value;
+
+  const selected = this.subtopics.find(
+    (s) => s.sub_topic_id === selectedSubtopicId
+  );
+
+  if (selected) {
+    this.mcqForm.patchValue({
+      topic_name: selected.topic.name,
+      subject_name: selected.topic.subject.name,
+    });
+  }
+}
+
 
   generateFromPrompt() {
     this.loading = true;
     this.error = '';
-    const payload = { prompt: this.customPrompt };
+    // const payload = { prompt: this.customPrompt };
+    const payload = this.promptForm.value;
+    console.log(payload);
+    
 
     this.mcqService.generateMcqs(payload).subscribe({
       // next: (res: any) => {
@@ -126,11 +212,37 @@ export class McqGeneratorComponent implements OnInit {
         outputerror: '', // Initialize output error
         verify: false, // Initialize verify flag
         upload: false, // Initialize upload flag
+
       }));
       console.log(this.mcqs);
       
       this.loading = false;
     }
+    });
+    // call the getTopics() method to fetch topics
+    this.mcqService.getTopics(this.mcqForm.value.token || this.promptForm.value.token).subscribe({
+      next: (res: any) => {
+        console.log(res);
+        this.subtopics = res.data;
+
+      if (this.subtopics.length > 0) {
+        const first = this.subtopics[0];
+        this.mcqForm.patchValue({
+          sub_topic_id: first.sub_topic_id,
+          topic_id: first.topic.topic_id,
+          subject_id: first.topic.subject.subject_id,
+          topic_name: first.topic.name,
+          subject_name: first.topic.subject.name,
+
+        });
+      }
+      console.log(this.mcqForm.value);
+      
+      },
+      error: (err) => {
+        this.error = 'Something went wrong';
+        this.loading = false;
+      },
     });
   }
 
@@ -235,7 +347,11 @@ export class McqGeneratorComponent implements OnInit {
 
   uploadQuestion(mcq: any) {
     console.log(mcq);
-    if(!this.mcqForm.value.token){
+    console.log(this.mcqForm.value);
+    console.log(this.promptForm.value);
+    
+    
+    if(!this.mcqForm.value.token && !this.promptForm.value.token) {
       alert('❌ Please enter a token to upload the question.');
       return;
     }
@@ -246,9 +362,12 @@ export class McqGeneratorComponent implements OnInit {
     this.error = '';
 
     const payload = {
-      token: this.mcqForm.value.token,
+      token: this.mcqForm.value.token || this.promptForm.value.token, // Token for authentication
+      topic_id: this.mcqForm.value.topic_id || '', // Topic for the question
+      sub_topic_id: this.mcqForm.value.sub_topic_id || '', // Sub-topic ID
+      subject_id: this.mcqForm.value.subject_id || '', // Subject ID
       response: [mcq],
-      qb_id: this.mcqForm.value.qb_id || '', // Question bank ID
+      qb_id: this.mcqForm.value.qb_id || this.promptForm.value.qb_id || '', // Question bank ID
       createdBy: this.mcqForm.value.createdBy || '', // Creator's name or ID
     };
 

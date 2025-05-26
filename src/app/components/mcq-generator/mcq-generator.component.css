@@ -605,3 +605,114 @@ ul {
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
+
+.topic {
+  display: flex;
+  gap: 20px;
+  /* align-items: end; */
+  flex-wrap: wrap;
+}
+
+.form-group1 {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  flex: 1;
+}
+
+.form-group1 label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.form-group1 input[type="text"] {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #666;
+}
+
+.form-group1 input[readonly] {
+  background-color: #f8f9fa;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* ng-select styling to match input fields */
+.form-group1 ng-select {
+  min-height: 40px;
+  position: relative;
+  z-index: 1000;
+}
+
+.form-group1 ng-select .ng-select-container {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 40px;
+}
+
+.form-group1 ng-select .ng-placeholder {
+  color: #999;
+  padding: 10px 12px;
+}
+
+.form-group1 ng-select .ng-value-container .ng-value {
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+/* Fix dropdown overlapping issues */
+.form-group1 ng-select .ng-dropdown-panel {
+  z-index: 1050;
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.form-group1 ng-select .ng-dropdown-panel .ng-option {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f1f1f1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.form-group1 ng-select .ng-dropdown-panel .ng-option:last-child {
+  border-bottom: none;
+}
+
+.form-group1 ng-select .ng-dropdown-panel .ng-option.ng-option-highlighted {
+  background-color: #f8f9fa;
+}
+
+.form-group1 ng-select .ng-dropdown-panel .ng-option.ng-option-selected {
+  background-color: #e3f2fd;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .topic {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .form-group1 {
+    min-width: 100%;
+  }
+}
+
+/* Optional: Add some spacing around the form */
+.topic {
+  max-width: 1200px;
+  /* margin: 0 auto; */
+  padding: 20px;
+}
