@@ -141,7 +141,7 @@
       [searchFn]="customSearchFn"
       (change)="onSubtopicChangeById($event.sub_topic_id)">
       <ng-template ng-option-tmp let-item="item">
-        {{ item.name }} - {{ item.topic.name }} - {{ item.topic.subject.name }}
+        {{ item?.name }} - {{ item?.topic?.name }} - {{ item?.topic?.subject?.name }}
       </ng-template>
 
       <!-- Custom display in selected item -->
