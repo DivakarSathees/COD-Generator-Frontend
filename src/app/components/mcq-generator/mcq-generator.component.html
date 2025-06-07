@@ -62,9 +62,14 @@
       </div> -->
 
       <!-- qb_id -->
-      <div>
+      <!-- <div>
         <label>Question Bank ID:</label>
         <input type="text" formControlName="qb_id" />
+      </div> -->
+
+      <div>
+        <label>Question Bank Name:</label>
+        <input type="text" formControlName="searchText" />
       </div>
   
 
@@ -87,15 +92,63 @@
         <label>Token:</label>
         <input type="text" formControlName="token" />
       </div>
-      <div>
+      <!-- <div>
         <label>Question Bank ID:</label>
         <input type="text" formControlName="qb_id" />
+      </div> -->
+      <div>
+        <label>Question Bank Name:</label>
+        <input type="text" formControlName="searchText" />
       </div>
       <br />
       <button type="submit" [disabled]="loading">
         {{ loading ? 'Generating...' : 'Generate MCQs' }}
       </button>
     </form>
+        <div *ngIf="filteredQuestionBanks.length > 0" >
+    <div class="filter-section">
+      <label>Filter by Created By:</label>
+      <select class="filter-select" [(ngModel)]="selectedCreator" (change)="filterByCreator()">
+        <option value="">All Creators</option>
+        <option *ngFor="let creator of uniqueCreators" [value]="creator">
+          {{ creator }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="filteredQuestionBanks.length > 0" class="card fade-in">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question Bank Name</th>
+            <th>Question Count</th>
+            <th>Created By</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let qb of filteredQuestionBanks"
+            [class.selected]="qb.qb_id === selectedQbId">
+            <td>
+              <strong>{{ qb.qb_name }}</strong>
+            </td>
+            <td>
+              <span class="question-count">{{ qb.questionCount || 'N/A' }}</span>
+            </td>
+            <td>{{ qb.createdBy || 'N/A' }}</td>
+            <td>
+              <button class="btn btn-secondary" (click)="selectQB(qb)">
+                Select
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 
     <!-- <ngx-monaco-editor></ngx-monaco-editor> -->
@@ -146,7 +199,7 @@
 
       <!-- Custom display in selected item -->
       <ng-template class="options-ng" ng-label-tmp let-item="item">
-        {{ item.name }} - {{ item.topic.name }} - {{ item.topic.subject.name }}
+        {{ item?.name }} - {{ item?.topic?.name }} - {{ item?.topic?.subject?.name }}
       </ng-template>
     </ng-select>
   </div>
@@ -197,41 +250,42 @@
 >
 
 
-  <label><strong>Q{{ i + 1 }}.</strong></label><br>
+  <div style="display: flex;justify-content: space-between;">
+  <div style="display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;">
+
+
+  <label style="font-size: 1.2rem;color: #667eea;font-weight: 700;">
+    <strong>Q{{ i + 1 }}.</strong>
+  </label>
+    <textarea
+    style="width: 560px; height: 36; margin-left: 10px;"
+  [(ngModel)]="mcqs[i].questionText" rows="3" class="editable-textarea"></textarea>
+  </div>
+  <div>
+<!-- <button style="height: fit-content;" (click)="copyMcq(mcq)">📋 Copy All</button> -->
+ <button (click)="copyMcq(mcq, i, $event)">
+  {{ copiedIndex === i ? '✅ Copied!' : '📋 Copy' }}
+</button>
+
+</div>
+</div>
+  <br>
   <!-- <textarea 
   style="width: 560px; height: 117px;"
   [(ngModel)]="mcq.question_data" rows="2" class="editable-textarea"></textarea> -->
 
   <!-- <label>Question:</label><br> -->
-  <textarea
+  <!-- <textarea
     style="width: 560px; height: 36;"
-  [(ngModel)]="mcqs[i].questionText" rows="3" class="editable-textarea"></textarea><br>
+  [(ngModel)]="mcqs[i].questionText" rows="3" class="editable-textarea"></textarea><br> -->
   <!-- Remove Code snippet toggle -->
   <button *ngIf="mcqs[i].codeSnippet" (click)="mcqs[i].codeVisible = !mcqs[i].codeVisible" style="margin-bottom: 8px;">
     {{ mcqs[i].codeVisible ? '🔒 Hide Code Snippet' : '🔓 Show Code Snippet' }}
   </button>
   
-
-  <!-- <label *ngIf="mcqs[i].codeVisible">Code Snippet:</label><br> -->
-  <!-- dropdown with languages -->
-  <!-- <select *ngIf="mcqs[i].codeVisible" [(ngModel)]="mcqs[i].language" class="editable-select"
-  style="width: fit-content;"
-  >
-    <option value="" disabled selected>Select Language</option>
-    <option value="python">Python</option>
-    <option value="javascript">JavaScript</option>
-    <option value="java">Java</option>
-    <option value="c">C</option>
-    <option value="cpp">C++</option>
-    <option value="csharp">C#</option>
-    <option value="ruby">Ruby</option>
-    <option value="go">Go</option>
-    <option value="typescript">TypeScript</option>
-    <option value="kotlin">Kotlin</option>
-    <option value="php">PHP</option>
-    <option value="bash">Bash</option>
-    </select>  -->
-  <!-- <ngx-monaco-editor [(ngModel)]="mcqs[i].codeSnippet" style="height: 300px;"></ngx-monaco-editor> -->
   <div *ngIf="mcqs[i].codeVisible" style="height: 132px;">
       <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="mcqs[i].codeSnippet"></ngx-monaco-editor>
       <!-- button to run code -->

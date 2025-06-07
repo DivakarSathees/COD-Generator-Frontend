@@ -9,6 +9,8 @@ export class McqServiceService {
 
   // private apiUrl = 'http://localhost:3000'; // adjust as needed
   private apiUrl = 'https://mcq-generator-pixe.onrender.com'; // adjust as needed
+  // private apiUrl1 = 'https://metadata-mapping-backend.onrender.com';
+
 
   constructor(private http: HttpClient) {}
 
@@ -40,6 +42,10 @@ export class McqServiceService {
       }
     });
 
+  }
+
+  getQuestionBanks(data: any) {
+    return this.http.post(`${this.apiUrl}/fetch-qbs`, data);
   }
 
   // token decoder method

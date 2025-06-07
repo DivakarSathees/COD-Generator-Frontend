@@ -22,8 +22,15 @@ export class McqGeneratorComponent implements OnInit {
   ngOnInit() {
    
   }
-  subtopics: any[] = [];
+  questionBanks: any[] = [];
+  filteredQuestionBanks: any[] = [];
+  uniqueCreators: string[] = [];
+  selectedCreator: string = '';
+  selectedQbId: string | null = null;
 
+  searchText = '';
+  subtopics: any[] = [];
+copiedIndex: number | null = null;
   mcqForm: FormGroup;
   promptForm: FormGroup;
   mcqs: any[] = [];
@@ -50,6 +57,7 @@ export class McqGeneratorComponent implements OnInit {
       topic: ['', Validators.required],
       token: ['', Validators.required ], // Token for authentication
       qb_id: [''], // Question bank ID
+      searchText: [''],
       // createdBy: [''], // Creator's name or ID
       // codeOutput: [''], // Output for code execution
       sub_topic_id: [''],
@@ -63,6 +71,7 @@ export class McqGeneratorComponent implements OnInit {
       prompt: ['', Validators.required],
       token: ['', Validators.required], // Token for authentication
       qb_id: [''], // Question bank ID
+      searchText: [''],
       code_snippet: [0, Validators.required],
     });
   }
@@ -87,6 +96,23 @@ export class McqGeneratorComponent implements OnInit {
     this.loading = true;
     this.error = '';
     const payload = this.mcqForm.value;
+    this.selectedQbId = '';
+
+    const qbPayload = {
+      search: this.mcqForm.value.searchText,
+      authToken: this.mcqForm.value.token,
+    };
+
+    this.mcqService.getQuestionBanks(qbPayload).subscribe({
+    next: (res: any) => {
+      this.questionBanks = res.results.questionbanks || [];
+      this.filteredQuestionBanks = [...this.questionBanks]; // initially no filter
+      this.extractUniqueCreators();
+    },
+    error: (err) => {
+      console.error('Error fetching QBs:', err);
+    }
+  });
 
     this.mcqService.generateMcqs(payload).subscribe({
       next: (res: any) => {
@@ -135,6 +161,71 @@ export class McqGeneratorComponent implements OnInit {
       },
     });
   }
+  selectQB(qb: any) {
+    this.selectedQbId = qb.qb_id;
+  }
+
+  extractUniqueCreators() {
+  const creators = this.questionBanks.map(qb => qb.createdBy).filter(Boolean);
+  this.uniqueCreators = Array.from(new Set(creators));
+}
+
+filterByCreator() {
+  if (this.selectedCreator) {
+    this.filteredQuestionBanks = this.questionBanks.filter(
+      qb => qb.createdBy === this.selectedCreator
+    );
+  } else {
+    this.filteredQuestionBanks = [...this.questionBanks];
+  }
+}
+
+//   copyMcq(mcq: any) {
+//     console.log(mcq);
+    
+//   const question = mcq.questionText || '';
+//   const code = mcq.codeSnippet || '';
+//   const options = mcq.options?.map((opt: any, idx: number) => `Option ${idx + 1}: ${opt.text || ''}`).join('\n') || '';
+//   const answer = mcq.answer?.args?.[0] || '';
+
+//   const textToCopy = `Question:\n${question}\n\n${code}\n\n${options}\n\nCorrect Answer:\n${answer}`;
+
+//   navigator.clipboard.writeText(textToCopy).then(() => {
+//     // alert('✅ Copied to clipboard!');
+//     console.log("✅ Copied to clipboard!");
+    
+//   }).catch(err => {
+//     alert('❌ Failed to copy: ' + err);
+//   });
+// }
+
+copyMcq(mcq: any, index: number, event: Event) {
+  console.log(mcq);
+  
+    const button = event.target as HTMLButtonElement;
+  const question = mcq.questionText || '';
+  let code
+  if(mcq.codeVisible == true){
+    code = mcq.codeSnippet || '';
+  } else 
+    code = ''
+  const options = mcq.options?.map((opt: any, idx: number) => `Option ${idx + 1}: ${opt.text || ''}`).join('\n') || '';
+  const answer = mcq.answer?.args?.[0] || '';
+
+  const textToCopy = `Question:\n${question}\n\n${code}\n\n${options}\n\nCorrect Answer:\n${answer}`;
+
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    this.copiedIndex = index;
+    button.blur();
+    setTimeout(() => {
+      this.copiedIndex = null;
+    }, 3000);
+  }).catch(err => {
+    alert('❌ Failed to copy: ' + err);
+  });
+}
+
+
 
   customSearchFn = (term: string, item: any) => {
   const lowerTerm = term.toLowerCase();
@@ -191,6 +282,24 @@ export class McqGeneratorComponent implements OnInit {
     // const payload = { prompt: this.customPrompt };
     const payload = this.promptForm.value;
     console.log(payload);
+
+        this.selectedQbId = '';
+
+    const qbPayload = {
+      search: this.promptForm.value.searchText,
+      authToken: this.promptForm.value.token,
+    };
+
+    this.mcqService.getQuestionBanks(qbPayload).subscribe({
+    next: (res: any) => {
+      this.questionBanks = res.results.questionbanks || [];
+      this.filteredQuestionBanks = [...this.questionBanks]; // initially no filter
+      this.extractUniqueCreators();
+    },
+    error: (err) => {
+      console.error('Error fetching QBs:', err);
+    }
+  });
     
 
     this.mcqService.generateMcqs(payload).subscribe({
@@ -346,6 +455,10 @@ export class McqGeneratorComponent implements OnInit {
   }
 
   uploadQuestion(mcq: any) {
+    if(this.selectedQbId == ''){
+      alert('❌ QB is not selected')
+      return;
+    }
     console.log(mcq);
     console.log(this.mcqForm.value);
     console.log(this.promptForm.value);
@@ -367,7 +480,8 @@ export class McqGeneratorComponent implements OnInit {
       sub_topic_id: this.mcqForm.value.sub_topic_id || '', // Sub-topic ID
       subject_id: this.mcqForm.value.subject_id || '', // Subject ID
       response: [mcq],
-      qb_id: this.mcqForm.value.qb_id || this.promptForm.value.qb_id || '', // Question bank ID
+      // qb_id: this.mcqForm.value.qb_id || this.promptForm.value.qb_id || '', // Question bank ID
+      qb_id: this.selectedQbId,
       createdBy: this.mcqForm.value.createdBy || '', // Creator's name or ID
     };
 
@@ -393,7 +507,14 @@ export class McqGeneratorComponent implements OnInit {
   }
 
   uploadAllQuestion(mcq: any) {
-    if(!this.mcqForm.value.token) {
+    if(this.selectedQbId == ''){
+      alert('❌ QB is not selected')
+      return;
+    }
+    console.log(this.promptForm);
+    console.log(this.mcqForm);
+    
+    if(this.mcqForm.value.token == "" && this.promptForm.value.token == "") {
       alert('❌ Please enter a token to upload the questions.');
       return;
     }
@@ -403,6 +524,9 @@ export class McqGeneratorComponent implements OnInit {
       item.code_snippet = item.codeSnippet;
       item.questionText = item.questionText;
       item.difficulty_level = item.difficulty_level || item.difficulty || 'Easy';
+      // item.topic_id = this.mcqForm.value.topic_id || '', // Topic for the question
+      // item.sub_topic_id= this.mcqForm.value.sub_topic_id || '', // Sub-topic ID
+      // item.subject_id= this.mcqForm.value.subject_id || '' // Subject ID
     });
 // if any mcq.upload is true, then dont upload that question
     const mcqsToUpload = this.mcqs.filter(item => !item.upload);
@@ -423,10 +547,14 @@ export class McqGeneratorComponent implements OnInit {
     
 
     const payload = {
-      token: this.mcqForm.value.token,
+      token: this.mcqForm.value.token || this.promptForm.value.token,
       response: mcqsToUpload,
-      qb_id: this.mcqForm.value.qb_id || '', // Question bank ID
+      // qb_id: this.mcqForm.value.qb_id || '', // Question bank ID
+      qb_id: this.selectedQbId,
       createdBy: this.mcqForm.value.createdBy || '', // Creator's name or ID
+      topic_id: this.mcqForm.value.topic_id || '', // Topic for the question
+      sub_topic_id: this.mcqForm.value.sub_topic_id || '', // Sub-topic ID
+      subject_id: this.mcqForm.value.subject_id || '', // Subject ID
     };
 
     console.log(payload);
