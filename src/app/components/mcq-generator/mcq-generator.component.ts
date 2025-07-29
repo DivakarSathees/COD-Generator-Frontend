@@ -455,10 +455,10 @@ copyMcq(mcq: any, index: number, event: Event) {
   }
 
   uploadQuestion(mcq: any) {
-    if(this.selectedQbId == ''){
-      alert('❌ QB is not selected')
-      return;
-    }
+    // if(this.selectedQbId == ''){
+    //   alert('❌ QB is not selected')
+    //   return;
+    // }
     console.log(mcq);
     console.log(this.mcqForm.value);
     console.log(this.promptForm.value);
@@ -481,7 +481,7 @@ copyMcq(mcq: any, index: number, event: Event) {
       subject_id: this.mcqForm.value.subject_id || '', // Subject ID
       response: [mcq],
       // qb_id: this.mcqForm.value.qb_id || this.promptForm.value.qb_id || '', // Question bank ID
-      qb_id: this.selectedQbId,
+      qb_id: this.selectedQbId || this.mcqForm.value.qb_id || this.promptForm.value.qb_id || '', // Question bank ID
       createdBy: this.mcqForm.value.createdBy || '', // Creator's name or ID
     };
 
@@ -507,10 +507,10 @@ copyMcq(mcq: any, index: number, event: Event) {
   }
 
   uploadAllQuestion(mcq: any) {
-    if(this.selectedQbId == ''){
-      alert('❌ QB is not selected')
-      return;
-    }
+    // if(this.selectedQbId == ''){
+    //   alert('❌ QB is not selected')
+    //   return;
+    // }
     console.log(this.promptForm);
     console.log(this.mcqForm);
     
@@ -550,7 +550,7 @@ copyMcq(mcq: any, index: number, event: Event) {
       token: this.mcqForm.value.token || this.promptForm.value.token,
       response: mcqsToUpload,
       // qb_id: this.mcqForm.value.qb_id || '', // Question bank ID
-      qb_id: this.selectedQbId,
+      qb_id: this.selectedQbId || this.mcqForm.value.qb_id || this.promptForm.value.qb_id || '', // Question bank ID
       createdBy: this.mcqForm.value.createdBy || '', // Creator's name or ID
       topic_id: this.mcqForm.value.topic_id || '', // Topic for the question
       sub_topic_id: this.mcqForm.value.sub_topic_id || '', // Sub-topic ID
