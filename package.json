@@ -22,6 +22,8 @@
     "@ng-select/ng-select": "^14.9.0",
     "monaco-editor": "^0.52.2",
     "ngx-monaco-editor-v2": "^19.0.2",
+    "ngx-quill": "^28.0.1",
+    "quill": "^2.0.3",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

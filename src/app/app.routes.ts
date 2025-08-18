@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { McqGeneratorComponent } from './components/mcq-generator/mcq-generator.component';
+import { CodGeneratorComponent } from './components/cod-generator/cod-generator.component';
 
 export const routes: Routes = [
-    { path: '', component: McqGeneratorComponent }
+    { path: '', component: CodGeneratorComponent }
 ];

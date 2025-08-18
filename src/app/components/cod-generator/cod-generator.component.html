@@ -1,0 +1,394 @@
+
+
+<div class="cod-generator-container">
+    <h2>COD Generator</h2>
+  
+    <label>
+      <input type="radio" name="mode" value="form" [(ngModel)]="mode" />
+      Use Form
+    </label>
+    <label>
+      <input type="radio" name="mode" value="prompt" [(ngModel)]="mode" />
+      Use Custom Prompt
+    </label>
+  
+    <!-- <form *ngIf="mode === 'form'" [formGroup]="codForm" (ngSubmit)="generateFromForm()">
+      <div>
+        <label>Question Count:</label>
+        <input type="number" formControlName="question_count" />
+      </div>
+  
+      <div>
+        <label>Options Count:</label>
+        <input type="number" formControlName="options_count" />
+      </div>
+  
+      <div>
+        <label>Difficulty Level:</label>
+        <select formControlName="difficulty_level">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+
+     
+      <div>
+        <label>Code Snippet Based:</label>
+        <select formControlName="code_snippet">
+          <option value=1>Yes</option>
+          <option value=0>No</option>
+        </select>
+      </div>
+  
+      <div>
+        <label>Topic:</label>
+        <input type="text" formControlName="topic" />
+      </div>
+
+      <div>
+        <label>Token:</label>
+        <input type="text" formControlName="token" />
+      </div>
+
+
+      <div>
+        <label>Question Bank ID:</label>
+        <input type="text" formControlName="qb_id" />
+      </div>
+
+      <div>
+        <label>Question Bank Name:</label>
+        <input type="text" formControlName="searchText" />
+      </div>
+  
+
+      <button type="submit" [disabled]="loading || codForm.invalid">
+        {{ loading ? 'Generating...' : 'Generate MCQs' }}
+      </button>
+    </form> -->
+  
+    <form *ngIf="mode === 'prompt'" [formGroup]="promptForm" (ngSubmit)="generateFromPrompt()">
+      <label>Enter Custom Prompt:</label>
+      <textarea formControlName="prompt" name="prompt" rows="6" cols="60" required></textarea>
+      <div>
+        <label>Code Snippet Based:</label>
+        <select formControlName="code_snippet">
+          <option value=1>Yes</option>
+          <option value=0>No</option>
+        </select>
+      </div>
+      <div>
+        <label>Token:</label>
+        <input type="text" formControlName="token" />
+      </div>
+      <div>
+        <label>Question Bank ID:</label>
+        <input type="text" formControlName="qb_id" />
+      </div>
+      <div>
+        <label>Question Bank Name:</label>
+        <input type="text" formControlName="searchText" />
+      </div>
+      <br />
+      <button type="submit" [disabled]="loading">
+        {{ loading ? 'Generating...' : 'Generate MCQs' }}
+      </button>
+    </form>
+        <div *ngIf="filteredQuestionBanks.length > 0" >
+    <div class="filter-section">
+      <label>Filter by Created By:</label>
+      <select class="filter-select" [(ngModel)]="selectedCreator" (change)="filterByCreator()">
+        <option value="">All Creators</option>
+        <option *ngFor="let creator of uniqueCreators" [value]="creator">
+          {{ creator }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="filteredQuestionBanks.length > 0" class="card fade-in">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Question Bank Name</th>
+            <th>Question Count</th>
+            <th>Created By</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let qb of filteredQuestionBanks"
+            [class.selected]="qb.qb_id === selectedQbId">
+            <td>
+              <strong>{{ qb.qb_name }}</strong>
+            </td>
+            <td>
+              <span class="question-count">{{ qb.questionCount || 'N/A' }}</span>
+            </td>
+            <td>{{ qb.createdBy || 'N/A' }}</td>
+            <td>
+              <button class="btn btn-secondary" (click)="selectQB(qb)">
+                Select
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+    <!-- <ngx-monaco-editor></ngx-monaco-editor> -->
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+    <!-- <ngx-monaco-editor class="textEditorContainer" [options]="editorOptions" [(ngModel)]="userCode" (init)="editorInit($event)"></ngx-monaco-editor> -->
+  
+    <div *ngIf="cods">
+      <!-- <h3>Generated MCQs:</h3>
+      <pre>{{ cods | json }}</pre> -->
+      <div class="cod-card-container" *ngIf="cods">
+        <h2>Generated MCQs</h2>
+        <!-- <button (click)="uploadAllQuestion(cods)">{{ uploading ?  '🏃‍➡️ Uploading...' : '📤 Upload All' }}</button> -->
+      
+        <!-- <div *ngFor="let cod of cods; let i = index" class="cod-card">
+
+          <h4>Q{{ i + 1 }}. {{ cod.question_data }}</h4>
+      
+          <ul>
+            <li *ngFor="let opt of cod.options">
+              {{ opt.text }}
+            </li>
+          </ul>
+      
+          <p><strong>Correct Answer:</strong> {{ cod.answer.args[0] }}</p>
+          <p><strong>Difficulty:</strong> {{ cod.manual_difficulty || cod.difficulty }}</p>
+      
+          <button (click)="verifyQuestion(cod)">✅ Verify</button>
+          <button (click)="uploadQuestion(cod)">📤 Upload</button>
+        </div> -->
+
+        
+
+<form *ngIf="subtopics" class="topic" [formGroup]="codForm">
+  <div class="form-group1">
+    <label for="subtopic">Subtopic</label>
+    <ng-select
+      [items]="subtopics"
+      bindLabel="name"
+      bindValue="sub_topic_id"
+      formControlName="sub_topic_id"
+      [searchable]="true"
+      [searchFn]="customSearchFn"
+      (change)="onSubtopicChangeById($event.sub_topic_id)">
+      <ng-template ng-option-tmp let-item="item">
+        {{ item?.name }} - {{ item?.topic?.name }} - {{ item?.topic?.subject?.name }}
+      </ng-template>
+
+      <!-- Custom display in selected item -->
+      <ng-template class="options-ng" ng-label-tmp let-item="item">
+        {{ item?.name }} - {{ item?.topic?.name }} - {{ item?.topic?.subject?.name }}
+      </ng-template>
+    </ng-select>
+  </div>
+
+  <!-- Topic -->
+   <div class="form-group2">
+  <div class="form-group1">
+    <label for="topic_name">Topic</label>
+    <input type="text" formControlName="topic_name" readonly />
+  </div><br>
+
+  <!-- Subject -->
+  <div class="form-group1">
+    <label for="subject_name">Subject</label>
+    <input type="text" formControlName="subject_name" readonly />
+  </div>
+   </div>
+</form>
+<select [(ngModel)]="language" class="editable-select"
+  style="width: fit-content;"
+  >
+    <option value="" disabled selected>Select Language</option>
+    <option value="python">Python</option>
+    <option value="javascript">JavaScript</option>
+    <option value="java">Java</option>
+    <option value="c">C</option>
+    <option value="cpp">C++</option>
+    <option value="csharp">C#</option>
+    <option value="ruby">Ruby</option>
+    <option value="go">Go</option>
+    <option value="typescript">TypeScript</option>
+    <option value="kotlin">Kotlin</option>
+    <option value="php">PHP</option>
+    <option value="bash">Bash</option>
+    </select> 
+
+        <div
+  *ngFor="let cod of cods; let i = index"
+  class="cod-card"
+  [ngStyle]="{
+    'border-left': cod.manual_difficulty === 'Hard' ? '5px solid #f56565' :
+                   cod.manual_difficulty === 'Medium' ? '5px solid #ed8936' :
+                   '5px solid #48bb78',
+    'background-color': cod.manual_difficulty === 'Hard' ? '#ffe5e5' :
+                        cod.manual_difficulty === 'Medium' ? '#fff3e0' :
+                        '#f0fff4'
+  }"
+>
+
+
+  <div style="display: flex;justify-content: space-between;">
+  <div style="display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;">
+
+
+  <label style="font-size: 1.2rem;color: #667eea;font-weight: 700;">
+    <strong>Q{{ i + 1 }}.</strong>
+  </label>
+    <!-- <textarea
+    style="width: 560px; height: 36; margin-left: 10px;"
+  [(ngModel)]="cods[i].question_data" rows="3" class="editable-textarea"></textarea> -->
+  <!-- <quill-editor [(ngModel)]="cods[i].question_data"></quill-editor> -->
+  <quill-editor
+        [(ngModel)]="cods[i].question_data"
+        [modules]="toolbarOptions"
+            theme="snow"
+
+        style="margin-top:10px; min-height:150px;"
+      ></quill-editor>
+    <!-- <div [innerHTML]="cods[i].question_data"></div> -->
+  </div>
+  <div>
+<!-- <button style="height: fit-content;" (click)="copyMcq(cod)">📋 Copy All</button> -->
+ <!-- <button (click)="copyMcq(cod, i, $event)">
+  {{ copiedIndex === i ? '✅ Copied!' : '📋 Copy' }}
+</button> -->
+
+</div>
+</div>
+  <br>
+  <!-- <textarea 
+  style="width: 560px; height: 117px;"
+  [(ngModel)]="cod.question_data" rows="2" class="editable-textarea"></textarea> -->
+
+  <!-- <label>Question:</label><br> -->
+  <!-- <textarea
+    style="width: 560px; height: 36;"
+  [(ngModel)]="cods[i].questionText" rows="3" class="editable-textarea"></textarea><br> -->
+  <!-- Remove Code snippet toggle -->
+  <!-- <button *ngIf="cods[i].codeSnippet" (click)="cods[i].codeVisible = !cods[i].codeVisible" style="margin-bottom: 8px;">
+    {{ cods[i].codeVisible ? '🔒 Hide Code Snippet' : '🔓 Show Code Snippet' }}
+  </button>
+  
+  <div *ngIf="cods[i].codeVisible" style="height: 132px;">
+      <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="cods[i].codeSnippet"></ngx-monaco-editor>
+      
+  </div> -->
+  <!-- <button [disabled]="cod.runcode" *ngIf="cods[i].codeVisible" (click)="runCode(cods[i].codeSnippet, i, cod)">{{ cod.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button> -->
+  <!-- button to clear the output -->
+  <button *ngIf="cods[i].codeOutput" (click)="cods[i].codeOutput=''">🧹 Clear Output</button>
+      <!-- <div *ngIf="cods[i].codeOutput && !outputerror" class="code-output">
+        <strong>Output:</strong>
+        <pre>{{ cods[i]['codeOutput'] }}</pre>
+      </div>
+      <div *ngIf="cods[i].outputerror" class="code-output">
+        <strong>Error:</strong>
+        <pre>{{cods[i].outputerror}}</pre>
+      </div> -->
+
+
+  <ul>
+    <li *ngFor="let opt of cod.options; let j = index">
+      <textarea
+        style="width: 560px;"
+        type="text"
+        [(ngModel)]="cod.options[j].text"
+        placeholder="Option {{ j + 1 }}"
+        class="editable-textarea"
+      ></textarea>
+    </li>
+  </ul>
+
+  <label><strong>Input Format:</strong></label>
+  <!-- <textarea
+    type="text"
+    [(ngModel)]="cod.inputformat"
+    placeholder="Correct Answer"
+    class="editable-textarea"
+  ></textarea>   -->
+  <quill-editor
+    [(ngModel)]="cod.inputformat"
+    [modules]="toolbarOptions"
+    theme="snow"
+    style="margin-top:10px; min-height:150px;"
+  ></quill-editor>
+
+  <label><strong>Output Format:</strong></label>
+  <!-- <textarea
+    type="text"
+    [(ngModel)]="cod.outputformat"
+    placeholder="Output Format"
+    class="editable-textarea"
+  ></textarea> -->
+    <div class="editor-container">
+
+  <quill-editor
+        [(ngModel)]="cod.outputformat"
+        [modules]="toolbarOptions"
+            theme="snow"
+        style="margin-top:10px; min-height:150px;"
+      ></quill-editor>
+      </div>
+
+  <label><strong>Difficulty:</strong></label>
+  <select [(ngModel)]="cod.manual_difficulty" class="editable-select">
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
+
+  <div class="button-group">
+    <!-- <button  [disabled]="cod.verify" (click)="verifySplitQuestion(cod)">{{ cod.verify ? 'Verifing' : '✅ Verify' }}</button> -->
+    <!-- <button  [disabled]="cod.upload" (click)="uploadSplitQuestion(cod)">{{ cod.upload ? 'Uploaded' : '📤 Upload' }}</button> -->
+    <button (click)="generateSolution(cod)">{{ cod.upload ? 'Generate Solution' : '📤 Solution Generated' }}</button>
+  </div>
+
+  <button *ngIf="solution" (click)="cods[i].codeVisible = !cods[i].codeVisible" style="margin-bottom: 8px;">
+    {{ cods[i].codeVisible ? '🔒 Hide Code Snippet' : '🔓 Show Code Snippet' }}
+  </button>
+  
+  <div *ngIf="cods[i].codeVisible" style="height: 386px;">
+      <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="solution"></ngx-monaco-editor>
+      <!-- button to run code -->
+       <!-- textarea for input -->
+      <textarea
+        style="width: 560px; height: 36;"
+        [(ngModel)]="cod.input"
+        placeholder="Input"
+        class="editable-textarea"
+      ></textarea>
+  <button [disabled]="cod.runcode" *ngIf="cods[i].codeVisible" (click)="runCode(solution, i, cod)">{{ cod.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button>
+  <button *ngIf="cods[i].codeOutput" (click)="cods[i].codeOutput=''">🧹 Clear Output</button>
+
+  <div *ngIf="cods[i].codeOutput && !outputerror" class="code-output">
+        <strong>Output:</strong>
+        <pre>{{ cods[i]['codeOutput'] }}</pre>
+      </div>
+      <div *ngIf="cods[i].outputerror" class="code-output">
+        <strong>Error:</strong>
+        <pre>{{cods[i].outputerror}}</pre>
+      </div>
+      
+  </div>
+</div>
+
+      </div>
+      
+    </div>
+  </div>
+  
