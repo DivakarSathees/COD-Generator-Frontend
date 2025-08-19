@@ -37,6 +37,8 @@ export class CodGeneratorComponent {
   editorOptions = {theme: 'vs-dark', language: 'csharp'};
   code: string= '';
   solution: any;
+  sampleInput:any
+  // weightage: any;
 
   toolbarOptions = {
     toolbar: [
@@ -69,7 +71,7 @@ export class CodGeneratorComponent {
 
     this.promptForm = this.fb.group({
       prompt: ['generate a scenario based hard level java programing description on method overloading', Validators.required],
-      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJoYTRqZTZXcmc4OGRtZis3Qkd1TmZBPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NTU0MTM1NywiZXhwIjoxNzU1NTg0NTU3fQ.RHRdU3yMUJ7A1PsFJv5xIvlyJQKrBS3dto0EsyGpZrI', Validators.required], // Token for authentication
+      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJGNmJybDhvMDRhQzV1SnJqY1pPdTJRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NTYyMTM1NiwiZXhwIjoxNzU1NjY0NTU2fQ.05yuaqDwivhYiRteOPim9s0a__n_VLOMGp61U5mDLzg', Validators.required], // Token for authentication
       qb_id: [''], // Question bank ID
       searchText: ['dummy'],
       code_snippet: [0, Validators.required],
@@ -209,6 +211,11 @@ export class CodGeneratorComponent {
       next: (res: any) => {
         console.log('Solution generated:', res);
         this.solution = res.response[0].solution_data;
+        this.sampleInput = res.response[0].samples || '';
+        this.sampleInput.forEach((sample: any) => {
+          sample.output ='';
+        } );
+
         // this.solutionInput = res.response[0].input || '';
         
         cod.code = res.response[0].solution_data;
@@ -230,7 +237,7 @@ export class CodGeneratorComponent {
         console.log('Code executed successfully:', res);
         cod.codeOutput = res.output || '';
         if (res.error) {
-          cod.outputerror = res.error;
+          cod.outputerror = res.error + " - " +res.details;
         }
         cod.runcode = false; // Reset runcode after execution
       },
@@ -241,5 +248,53 @@ export class CodGeneratorComponent {
       }
     });
   }
+ 
+  // Add new sample
+addSample() {
+  this.sampleInput.push({
+    input: '',
+    output: '',
+    error: '',
+    running: false,
+    isSelected: false
+  });
+}
+
+// Run sample execution
+runSample(code: string, index: number, sample: any) {
+  sample.running = true;
+  sample.output = '';
+  sample.error = '';
+
+  this.codService.runCode({code, input: sample.input}).subscribe({
+    next: (res: any) => {
+      sample.output = res.output || '';
+      sample.timeBytes = res.timeBytes || '';
+      sample.memBytes = String(res.memBytes || '');
+      sample.timeLimit = null;
+      sample.outputLimit= null;
+      sample.memoryLimit= null;
+      if (res.error) {
+          sample.error = res.error + " - " +res.details;
+        }
+      sample.running = false;
+    },
+    error: (err) => {
+      sample.error = 'Error executing code';
+      sample.running = false;
+      console.error(err);
+    }
+  });
+}
+
+uploadCOD(cod:any){
+  console.log(cod);
+  console.log(this.sampleInput);
+  
+  
+}
+
+
+
 
 }

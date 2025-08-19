@@ -150,7 +150,7 @@
       <!-- <h3>Generated MCQs:</h3>
       <pre>{{ cods | json }}</pre> -->
       <div class="cod-card-container" *ngIf="cods">
-        <h2>Generated MCQs</h2>
+        <h2>Generated COD</h2>
         <!-- <button (click)="uploadAllQuestion(cods)">{{ uploading ?  '🏃‍➡️ Uploading...' : '📤 Upload All' }}</button> -->
       
         <!-- <div *ngFor="let cod of cods; let i = index" class="cod-card">
@@ -291,7 +291,7 @@
   </div> -->
   <!-- <button [disabled]="cod.runcode" *ngIf="cods[i].codeVisible" (click)="runCode(cods[i].codeSnippet, i, cod)">{{ cod.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button> -->
   <!-- button to clear the output -->
-  <button *ngIf="cods[i].codeOutput" (click)="cods[i].codeOutput=''">🧹 Clear Output</button>
+  <!-- <button *ngIf="cods[i].codeOutput" (click)="cods[i].codeOutput=''">🧹 Clear Output</button> -->
       <!-- <div *ngIf="cods[i].codeOutput && !outputerror" class="code-output">
         <strong>Output:</strong>
         <pre>{{ cods[i]['codeOutput'] }}</pre>
@@ -361,11 +361,12 @@
   <button *ngIf="solution" (click)="cods[i].codeVisible = !cods[i].codeVisible" style="margin-bottom: 8px;">
     {{ cods[i].codeVisible ? '🔒 Hide Code Snippet' : '🔓 Show Code Snippet' }}
   </button>
+
   
-  <div *ngIf="cods[i].codeVisible" style="height: 386px;">
+  <!-- <div *ngIf="cods[i].codeVisible" style="height: 386px;">
+    
       <ngx-monaco-editor style="height: 50%" [options]="editorOptions" [(ngModel)]="solution"></ngx-monaco-editor>
-      <!-- button to run code -->
-       <!-- textarea for input -->
+<div>
       <textarea
         style="width: 560px; height: 36;"
         [(ngModel)]="cod.input"
@@ -373,19 +374,140 @@
         class="editable-textarea"
       ></textarea>
   <button [disabled]="cod.runcode" *ngIf="cods[i].codeVisible" (click)="runCode(solution, i, cod)">{{ cod.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}</button>
-  <button *ngIf="cods[i].codeOutput" (click)="cods[i].codeOutput=''">🧹 Clear Output</button>
-
+</div>
   <div *ngIf="cods[i].codeOutput && !outputerror" class="code-output">
         <strong>Output:</strong>
         <pre>{{ cods[i]['codeOutput'] }}</pre>
       </div>
-      <div *ngIf="cods[i].outputerror" class="code-output">
+      <div *ngIf="cods[i].outputerror && !cods[i].codeOutput" class="code-output">
         <strong>Error:</strong>
         <pre>{{cods[i].outputerror}}</pre>
       </div>
       
   </div>
+</div> -->
+<div *ngIf="cods[i].codeVisible" class="code-section">
+
+  <!-- ✅ Code editor -->
+  <div style="height: 372px; margin-bottom: 20px;">
+    <ngx-monaco-editor 
+      class="editor" 
+      [options]="editorOptions" 
+      [(ngModel)]="solution">
+    </ngx-monaco-editor>
+  </div>
+
+  <!-- ✅ Single input + Run Code -->
+  <div class="code-actions" style="display: flex; justify-content: space-between;">
+    <textarea
+      [(ngModel)]="cod.input"
+      placeholder="Input"
+      class="editable-textarea"
+    ></textarea>
+
+    <!-- <button 
+      class="run-btn"
+      [disabled]="cod.runcode" 
+      (click)="runCode(solution, i, cod)">
+      {{ cod.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}
+    </button> -->
+
+  <!-- ✅ Output/Error -->
+  <div  class="code-output" style="width: 48%;">
+    <strong>Output:</strong>
+    <pre *ngIf="cods[i].codeOutput && !outputerror">{{ cods[i]['codeOutput'] }}</pre>
+    <pre *ngIf="cods[i].outputerror && !cods[i].codeOutput">{{cods[i].outputerror}}</pre>
+
+  </div>
+  
+  <!-- <div *ngIf="cods[i].outputerror && !cods[i].codeOutput" class="code-output">
+    <strong>Error:</strong>
+    <pre>{{cods[i].outputerror}}</pre>
+  </div> -->
+  </div>
+  <button 
+      class="run-btn"
+      [disabled]="cod.runcode" 
+      (click)="runCode(solution, i, cod)">
+      {{ cod.runcode ?  '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}
+    </button>
+
+
+
+<div class="samples-section" *ngIf="sampleInput">
+  <h4 class="text-lg font-semibold mb-2">Sample Test Cases</h4>
+
+  <div *ngFor="let s of sampleInput; let j = index" class="sample-item">
+
+  <!-- ✅ Checkbox to mark as official sample -->
+  <label class="sample-checkbox">
+    <input type="checkbox" [(ngModel)]="s.isSelected" />
+    Q{{ j + 1 }}
+  </label>
+
+  <div class="code-actions" style="display: flex; justify-content: space-between;">
+    <!-- Editable input -->
+    <textarea
+      [(ngModel)]="s.input"
+      class="editable-textarea"
+      placeholder="Sample Input">
+    </textarea>
+
+    <!-- Show output (non-editable) -->
+    <div *ngIf="s.output" class="code-output" style="width: 48%;">
+      <strong>Output:</strong>
+      <pre>{{ s.output }}</pre>
+    </div>
+
+    <div *ngIf="s.error" class="code-output" style="width: 48%;">
+      <strong>Error:</strong>
+      <pre>{{ s.error }}</pre>
+    </div>
+  </div>
+  <div>
+  
+  <!-- Run button for each sample -->
+  <button 
+    class="run-btn"
+    [disabled]="s.running"
+    (click)="runSample(solution, i, s)">
+    {{ s.running ? '🏃‍➡️ Running...' : '🏃‍➡️ Run Code' }}
+  </button>
+
+  <!-- ✅ Disable weightage until Run Code executed at least once, 
+       or if marked as official -->
+  <input 
+    type="text" 
+    [(ngModel)]="s.weightage" 
+    placeholder="Weightage" 
+    class="editable-textarea"
+    style="width: 100px; margin-left: 10px;"
+    [disabled]="!s.output || s.isSelected">
+
+  <select [(ngModel)]="s.difficulty" 
+    [disabled]="!s.output || s.isSelected" style="width: auto;">
+    <option value="Easy">Easy</option>
+    <option value="Medium">Medium</option>
+    <option value="Hard">Hard</option>
+  </select>
 </div>
+</div>
+
+<!-- ✅ Add new sample button -->
+<button class="add-btn" (click)="addSample()">➕ Add Sample Input</button>
+
+</div>
+
+
+</div>
+
+
+<div class="button-group">
+    <!-- <button  [disabled]="cod.verify" (click)="verifySplitQuestion(cod)">{{ cod.verify ? 'Verifing' : '✅ Verify' }}</button> -->
+    <button  (click)="uploadCOD(cod)">{{ cod.upload ? 'Uploaded' : '📤 Upload' }}</button>
+    <!-- <button (click)="generateSolution(cod)">{{ cod.upload ? 'Generate Solution' : '📤 Solution Generated' }}</button> -->
+  </div>
+
 
       </div>
       
