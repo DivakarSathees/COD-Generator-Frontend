@@ -290,6 +290,212 @@ runSample(code: string, index: number, sample: any) {
 uploadCOD(cod:any){
   console.log(cod);
   console.log(this.sampleInput);
+
+  // sample payload
+//   {
+//     "question_type": "programming",
+//     "question_data": "<p><strong>Title: Online Shopping Cart - Applying Discounts</strong></p><p><br></p><p>You are working on an online shopping cart application in C#. The cart allows customers to purchase items and calculates the total cost. Implement a program that takes the quantity and unit price of items as input and calculates the total cost, applying discounts as described below:</p><ul><li>If the total quantity of items is 10 or more, apply a 15% discount.</li><li>If the total quantity of items is less than 10, no discount is applied.</li></ul><p><br></p><p><strong>Question</strong>:</p><p>Write a C# program that takes the following inputs:</p><p><br></p><ol><li>The number of items in the cart.</li><li>The unit price of each item.</li></ol><p>The program should calculate the total cost based on the given quantity and unit price, applying the appropriate discount (if applicable). The program should then display the total cost to the user by converting it to a string with two decimal places(ToString(\"F2\")).</p><p><br></p><p>Note:</p><ul><li>The output should be in this format - \"Total cost: {totalcost}\"</li></ul><p><br></p><p><strong style=\"color: var(--tw-prose-bold);\">Classes to be implemented</strong><span style=\"color: var(--tw-prose-bold);\">:</span></p><p>\t<strong style=\"color: var(--tw-prose-bold);\">Program</strong><span style=\"color: var(--tw-prose-bold);\">:</span></p><ul><li>Methods:</li><li class=\"ql-indent-1\"><strong>Main(string[] args)</strong>: The entry point of the program where the user interacts with the system.</li><li class=\"ql-indent-1\"><strong>CalculateTotalCost(int quantity, double unitPrice)</strong>: Method to calculate the total cost of items in the cart, applying a discount if the quantity is 10 or more. Returns - TotalCost of type double.</li></ul>",
+//     "question_editor_type": 1,
+//     "multilanguage": [
+//         "C#"
+//     ],
+//     "inputformat": "<p>The first line prompts the user to enter the number of items in the cart.</p><p>The second line prompts the user to enter the unit price of each item.</p><p>Both inputs should be positive integers.</p>",
+//     "outputformat": "<p>The program should print the total cost of the items, taking into account any applicable discounts.</p>",
+//     "enablecustominput": true,
+//     "line_token_evaluation": false,
+//     "codeconstraints": null,
+//     "timelimit": null,
+//     "memorylimit": null,
+//     "codesize": null,
+//     "setLimit": false,
+//     "enable_api": false,
+//     "outputLimit": null,
+//     "subject_id": "15277909-f542-478d-9c4b-3de8e7812734",
+//     "blooms_taxonomy": null,
+//     "course_outcome": null,
+//     "program_outcome": null,
+//     "hint": [],
+//     "manual_difficulty": "Medium",
+//     "solution": [
+//         {
+//             "language": "C#",
+//             "whitelist": [
+//                 {
+//                     "list": [
+//                         "CalculateTotalCost",
+//                         "Program",
+//                         "double"
+//                     ]
+//                 }
+//             ],
+//             "hasSnippet": false,
+//             "solutiondata": [
+//                 {
+//                     "memBytes": 261,
+//                     "solution": "using System;\r\n\r\nclass Program\r\n{\r\n    static void Main(string[] args)\r\n    {\r\n        //Console.WriteLine(\"Enter the number of items in the cart:\");\r\n        int quantity = int.Parse(Console.ReadLine());\r\n\r\n        //Console.WriteLine(\"Enter the unit price of each item:\");\r\n        double unitPrice = double.Parse(Console.ReadLine());\r\n\r\n        double totalCost = CalculateTotalCost(quantity, unitPrice);\r\n\r\n        Console.WriteLine(\"Total cost: \" + totalCost.ToString(\"F2\"));\r\n    }\r\n\r\n    static double CalculateTotalCost(int quantity, double unitPrice)\r\n    {\r\n        double totalCost = quantity * unitPrice;\r\n\r\n        if (quantity >= 10)\r\n        {\r\n            double discountAmount = totalCost * 0.15;\r\n            totalCost -= discountAmount;\r\n        }\r\n\r\n        return totalCost;\r\n    }\r\n}\r\n",
+//                     "timeBytes": 21,
+//                     "solutionExp": null,
+//                     "solutionbest": true,
+//                     "isSolutionExp": false,
+//                     "solutionDebug": null
+//                 }
+//             ],
+//             "hideHeader": false,
+//             "hideFooter": false
+//         }
+//     ],
+//     "testcases": [
+//         {
+//             "input": "15\n12.50",
+//             "output": "Total cost: 159.38\n",
+//             "memBytes": "177",
+//             "timeBytes": 46,
+//             "difficulty": "Hard",
+//             "score": 25,
+//             "timeLimit": null,
+//             "outputLimit": null,
+//             "memoryLimit": null
+//         },
+//         {
+//             "input": "5\n20",
+//             "output": "Total cost: 100.00\n",
+//             "memBytes": "176",
+//             "timeBytes": 35,
+//             "difficulty": "Hard",
+//             "score": 25,
+//             "timeLimit": null,
+//             "outputLimit": null,
+//             "memoryLimit": null
+//         },
+//         {
+//             "input": "12\n15.75",
+//             "output": "Total cost: 160.65\n",
+//             "memBytes": "175",
+//             "timeBytes": 44,
+//             "difficulty": "Hard",
+//             "score": 25,
+//             "timeLimit": null,
+//             "outputLimit": null,
+//             "memoryLimit": null
+//         },
+//         {
+//             "input": "7\n30.50",
+//             "output": "Total cost: 213.50\n",
+//             "memBytes": "175",
+//             "timeBytes": 39,
+//             "difficulty": "Hard",
+//             "score": 25,
+//             "timeLimit": null,
+//             "outputLimit": null,
+//             "memoryLimit": null
+//         }
+//     ],
+//     "topic_id": "fa333ed1-e80d-4640-ba97-54285621feb9",
+//     "sub_topic_id": "02276ff5-f6ee-40c6-b152-13040b686d57",
+//     "linked_concepts": "",
+//     "tags": [
+//         ""
+//     ],
+//     "sample_io": "[{\"input\":\"3\\n7.25\",\"output\":\"Total cost: 21.75\\n\",\"memBytes\":\"177\",\"timeBytes\":32,\"sample\":\"Yes\",\"difficulty\":\" - \",\"score\":\" - \",\"timeLimit\":null,\"outputLimit\":null,\"memoryLimit\":null},{\"input\":\"8\\n10.00\",\"output\":\"Total cost: 80.00\\n\",\"memBytes\":\"175\",\"timeBytes\":40,\"sample\":\"Yes\",\"difficulty\":\" - \",\"score\":\" - \",\"timeLimit\":null,\"outputLimit\":null,\"memoryLimit\":null},{\"input\":\"30\\n2\",\"output\":\"Total cost: 51.00\\n\",\"memBytes\":\"262\",\"timeBytes\":21,\"sample\":\"Yes\",\"difficulty\":\" - \",\"score\":\" - \",\"timeLimit\":null,\"outputLimit\":null,\"memoryLimit\":null}]",
+//     "question_media": [],
+//     "pcm_combination_ids": [
+//         "81ceb3f3-8307-416d-907a-120a95255e8f"
+//     ],
+//     "qb_id": "77569489-dd77-45e4-8080-ef896a63dcb6",
+//     "createdBy": "bd3c2f4d-b53d-4de6-82c9-00413b70756c",
+//     "imported": "is_imported_question"
+// }
+
+  // Prepare the payload for uploading
+  const payload = {
+    question_type: 'programming',
+    question_data: cod.questionText,
+    question_editor_type: 1,
+    multilanguage: [cod.language],
+    inputformat: cod.inputFormat,
+    outputformat: cod.outputFormat,
+    enablecustominput: true,
+    line_token_evaluation: false,
+    codeconstraints: null,
+    timelimit: null,
+    memorylimit: null,
+    codesize: null,
+    setLimit: false,
+    enable_api: false,
+    outputLimit: null,
+    subject_id: cod.subject_id || '',
+    blooms_taxonomy: null,
+    course_outcome: null,
+    program_outcome: null,
+    hint: [],
+    manual_difficulty: cod.difficulty_level || 'Medium',
+    solution: [
+      {
+        language: cod.language,
+        whitelist: [
+          {
+            list: [
+              'CalculateTotalCost',
+              'Program',
+              'double'
+            ]
+          }
+        ],
+        hasSnippet: false,
+        solutiondata: [
+          {
+            memBytes: cod.solution.memBytes || 0,
+            solution: cod.code,
+            timeBytes: cod.solution.timeBytes || 0,
+            solutionExp: null,
+            solutionbest: true,
+            isSolutionExp: false,
+            solutionDebug: null
+          }
+        ],
+        hideHeader: false,
+        hideFooter: false
+      }
+    ],
+    testcases: this.sampleInput.map((sample: any) => ({
+      input: sample.input,
+      output: sample.output,
+      memBytes: sample.memBytes || '0',
+      timeBytes: sample.timeBytes || 0,
+      difficulty: cod.difficulty_level || 'Medium',
+      score: cod.score || 25,
+      timeLimit: null,
+      outputLimit: null,
+      memoryLimit: null
+    })),
+    topic_id: cod.topic_id || '',
+    sub_topic_id: cod.sub_topic_id || '',
+    linked_concepts: '',
+    tags: [''],
+    sample_io: JSON.stringify(this.sampleInput.map((sample: any) => ({
+      input: sample.input,
+      output: sample.output,
+      memBytes: sample.memBytes || '0',
+      timeBytes: sample.timeBytes || 0,
+      sample: 'Yes',
+      difficulty: ' - ',
+      score: ' - ',
+      timeLimit: null,
+      outputLimit: null,
+      memoryLimit: null
+    }))),
+    question_media: [],
+    pcm_combination_ids: [cod.pcm_combination_id || ''],
+    qb_id: cod.qb_id || '',
+    createdBy: cod.createdBy || '',
+    imported: cod.imported || 'is_imported_question'  
+  };  
+
+  console.log('Payload to upload:', payload);
+  
+
+  }
+
   
   
 }
@@ -297,4 +503,4 @@ uploadCOD(cod:any){
 
 
 
-}
+
