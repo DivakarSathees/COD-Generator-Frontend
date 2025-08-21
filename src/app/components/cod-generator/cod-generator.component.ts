@@ -71,10 +71,15 @@ export class CodGeneratorComponent {
 
     this.promptForm = this.fb.group({
       prompt: ['generate a scenario based hard level java programing description on method overloading', Validators.required],
-      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJGNmJybDhvMDRhQzV1SnJqY1pPdTJRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NTYyMTM1NiwiZXhwIjoxNzU1NjY0NTU2fQ.05yuaqDwivhYiRteOPim9s0a__n_VLOMGp61U5mDLzg', Validators.required], // Token for authentication
+      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJjN1FKU1MrbHBwaVNJY0ExZXNYVHR3PT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NTc5NTc5MywiZXhwIjoxNzU1ODM4OTkzfQ.K7GPVjK6cNcg48TlXmY-tB47YB5ycxJ4H-wmh198ne0', Validators.required], // Token for authentication
       qb_id: [''], // Question bank ID
       searchText: ['dummy'],
       code_snippet: [0, Validators.required],
+      sub_topic_id: [''],
+      topic_id: [''],
+      subject_id: [''],
+      topic_name: [''],
+      subject_name: [''],
     });
   }
 
@@ -88,8 +93,10 @@ export class CodGeneratorComponent {
     const selected = this.subtopics.find(
       (s) => s.sub_topic_id === event
     );
+    console.log('Selected subtopic:', selected);
+    
     if (selected) {
-      this.codForm.patchValue({
+      this.promptForm.patchValue({
         sub_topic_id: selected.sub_topic_id,
         topic_id: selected.topic.topic_id,
         subject_id: selected.topic.subject.subject_id,
@@ -186,7 +193,7 @@ export class CodGeneratorComponent {
 
       if (this.subtopics.length > 0) {
         const first = this.subtopics[0];
-        this.codForm.patchValue({
+        this.promptForm.patchValue({
           sub_topic_id: first.sub_topic_id,
           topic_id: first.topic.topic_id,
           subject_id: first.topic.subject.subject_id,
@@ -195,7 +202,7 @@ export class CodGeneratorComponent {
 
         });
       }
-      console.log(this.codForm.value);
+      console.log(this.promptForm.value);
       
       },
       error: (err) => {
@@ -260,6 +267,11 @@ addSample() {
   });
 }
 
+deleteSample(index: number) {
+  this.sampleInput.splice(index, 1);
+}
+
+
 // Run sample execution
 runSample(code: string, index: number, sample: any) {
   sample.running = true;
@@ -290,6 +302,15 @@ runSample(code: string, index: number, sample: any) {
 uploadCOD(cod:any){
   console.log(cod);
   console.log(this.sampleInput);
+  console.log(this.solution);
+
+  // if sampltinput.error is there send a toast error message
+  if (this.sampleInput.some((sample: any) => sample.error)) {
+    this.error = 'Please resolve all sample errors before uploading.';
+    return;
+  }
+  
+
 
   // sample payload
 //   {
@@ -409,11 +430,11 @@ uploadCOD(cod:any){
   // Prepare the payload for uploading
   const payload = {
     question_type: 'programming',
-    question_data: cod.questionText,
+    question_data: cod.question_data,
     question_editor_type: 1,
-    multilanguage: [cod.language],
-    inputformat: cod.inputFormat,
-    outputformat: cod.outputFormat,
+    multilanguage: [this.language],
+    inputformat: cod.inputformat,
+    outputformat: cod.outputformat,
     enablecustominput: true,
     line_token_evaluation: false,
     codeconstraints: null,
@@ -423,30 +444,27 @@ uploadCOD(cod:any){
     setLimit: false,
     enable_api: false,
     outputLimit: null,
-    subject_id: cod.subject_id || '',
+    subject_id: this.promptForm.value.subject_id || cod.subject_id || '',
     blooms_taxonomy: null,
     course_outcome: null,
     program_outcome: null,
     hint: [],
-    manual_difficulty: cod.difficulty_level || 'Medium',
+    manual_difficulty: cod.manual_difficulty || 'Medium',
     solution: [
       {
-        language: cod.language,
+        language: this.language,
         whitelist: [
           {
             list: [
-              'CalculateTotalCost',
-              'Program',
-              'double'
             ]
           }
         ],
         hasSnippet: false,
         solutiondata: [
           {
-            memBytes: cod.solution.memBytes || 0,
-            solution: cod.code,
-            timeBytes: cod.solution.timeBytes || 0,
+            // memBytes: cod.solution?.memBytes || 0,
+            solution: this.solution || '',
+            // timeBytes: cod.solution?.timeBytes || 0,
             solutionExp: null,
             solutionbest: true,
             isSolutionExp: false,
@@ -457,41 +475,67 @@ uploadCOD(cod:any){
         hideFooter: false
       }
     ],
-    testcases: this.sampleInput.map((sample: any) => ({
-      input: sample.input,
-      output: sample.output,
-      memBytes: sample.memBytes || '0',
-      timeBytes: sample.timeBytes || 0,
-      difficulty: cod.difficulty_level || 'Medium',
-      score: cod.score || 25,
-      timeLimit: null,
-      outputLimit: null,
-      memoryLimit: null
-    })),
-    topic_id: cod.topic_id || '',
-    sub_topic_id: cod.sub_topic_id || '',
+    testcases: this.sampleInput
+        .filter((sample: any) => !sample.isSelected) // keep only selected
+        .map((sample: any) => ({
+          input: sample.input,
+          output: sample.output,
+          memBytes: sample.memBytes || '0',
+          timeBytes: sample.timeBytes || 0,
+          difficulty: cod.difficulty_level || 'Medium',
+          score: sample.score || 25,
+          timeLimit: null,
+          outputLimit: null,
+          memoryLimit: null
+        }
+      )
+    ),
+    topic_id: cod.topic_id || this.promptForm.value.topic_id || '',
+    sub_topic_id: cod.sub_topic_id || this.promptForm.value.sub_topic_id || '',
     linked_concepts: '',
     tags: [''],
-    sample_io: JSON.stringify(this.sampleInput.map((sample: any) => ({
-      input: sample.input,
-      output: sample.output,
-      memBytes: sample.memBytes || '0',
-      timeBytes: sample.timeBytes || 0,
-      sample: 'Yes',
-      difficulty: ' - ',
-      score: ' - ',
-      timeLimit: null,
-      outputLimit: null,
-      memoryLimit: null
-    }))),
+    sample_io: JSON.stringify(
+      this.sampleInput
+        .filter((sample: any) => sample.isSelected) // keep only selected
+        .map((sample: any) => ({
+          input: sample.input,
+          output: sample.output,
+          memBytes: sample.memBytes || '0',
+          timeBytes: sample.timeBytes || 0,
+          sample: 'Yes',
+          difficulty: ' - ',
+          score: ' - ',
+          timeLimit: null,
+          outputLimit: null,
+          memoryLimit: null
+        }))
+    ),
     question_media: [],
     pcm_combination_ids: [cod.pcm_combination_id || ''],
-    qb_id: cod.qb_id || '',
+    qb_id: this.selectedQbId || cod.qb_id || this.promptForm.value.qb_id || '',
     createdBy: cod.createdBy || '',
     imported: cod.imported || 'is_imported_question'  
   };  
 
   console.log('Payload to upload:', payload);
+
+  // Call the uploadCods method from the service
+  this.codService.uploadCods(payload, this.promptForm.value.token ).subscribe({
+    next: (res: any) => {
+      console.log('Upload successful:', res);
+      this.error = 'COD uploaded successfully!';
+      // Optionally, reset the form or perform other actions
+      // this.codForm.reset();
+      // this.promptForm.reset();
+      // this.sampleInput = [];
+      // this.solution = '';
+    }
+    ,
+    error: (err) => {
+      console.error('Error uploading COD:', err);
+      this.error = 'Error uploading COD: ' + (err.error?.message || 'Unknown error');
+    }
+  });
   
 
   }

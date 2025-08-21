@@ -34,4 +34,26 @@ export class CodServiceService {
   runCode(code: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/run-java`, code);
   }
+
+  uploadCods(data: any, token: any): Observable<any> {
+    const decode = this.decodeToken(token);
+    console.log('Decoded Token:', decode.user_id);
+    data.createdBy = decode.user_id; // Add user_id to the data object
+    console.log(data);
+    
+
+    return this.http.post(`${this.apiUrl}/upload-to-platform`, { data, token });
+  }
+
+  decodeToken(token: string): any {
+    try {
+      const payload = token.split('.')[1];
+      console.log(JSON.parse(atob(payload)));
+      
+      return JSON.parse(atob(payload));
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
+    }
+  }
 }
