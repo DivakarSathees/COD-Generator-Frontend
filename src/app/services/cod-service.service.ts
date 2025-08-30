@@ -7,7 +7,8 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class CodServiceService {
 
-  private apiUrl = 'http://localhost:3000';
+  // private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://cod-generator-backend.onrender.com';
 
   constructor(private http: HttpClient) { }
 
