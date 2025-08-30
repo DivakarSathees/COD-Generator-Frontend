@@ -92,7 +92,7 @@
       </div>
       <br />
       <button type="submit" [disabled]="loading">
-        {{ loading ? 'Generating...' : 'Generate MCQs' }}
+        {{ loading ? 'Generating...' : 'Generate COD' }}
       </button>
     </form>
         <div *ngIf="filteredQuestionBanks.length > 0" >
@@ -355,11 +355,11 @@
   <div class="button-group">
     <!-- <button  [disabled]="cod.verify" (click)="verifySplitQuestion(cod)">{{ cod.verify ? 'Verifing' : '✅ Verify' }}</button> -->
     <!-- <button  [disabled]="cod.upload" (click)="uploadSplitQuestion(cod)">{{ cod.upload ? 'Uploaded' : '📤 Upload' }}</button> -->
-    <button (click)="generateSolution(cod)">{{ cod.upload ? 'Generate Solution' : '📤 Solution Generated' }}</button>
+    <button (click)="generateSolution(cod)">{{ solutionGenerated ? '📤 Solution Generated' : 'Generate Solution' }}</button>
   </div>
 
   <button *ngIf="solution" (click)="cods[i].codeVisible = !cods[i].codeVisible" style="margin-bottom: 8px;">
-    {{ cods[i].codeVisible ? '🔒 Hide Code Snippet' : '🔓 Show Code Snippet' }}
+    {{ cods[i].codeVisible ? '🔒 Hide Solution' : '🔓 Show Solution' }}
   </button>
 
   
@@ -437,15 +437,29 @@
 <div class="samples-section" *ngIf="sampleInput">
   <h4 class="text-lg font-semibold mb-2">Sample Test Cases</h4>
 
-  <div *ngFor="let s of sampleInput; let j = index" class="sample-item">
+  <div style="background-color: #fff4f4;" *ngFor="let s of sampleInput; let j = index" class="sample-item"
+  [ngStyle]="{
+    'background-color': s.difficulty === 'Hard' ? '#fff4f4' :
+                        s.difficulty === 'Medium' ? 'rgb(255 249 241)' :
+                        'rgb(245 255 248)',
+    'border-color': s.difficulty === 'Hard' ? '#fff4f4' :
+                    s.difficulty === 'Medium' ? '#eee5d8' :
+                    'rgb(245 255 248)',
+    'border-style': 'inset',
+    'border-radius': 'inherit'
+  }"
+  >
 
+    
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
   <!-- ✅ Checkbox to mark as official sample -->
-  <label class="sample-checkbox">
-    <input type="checkbox" [(ngModel)]="s.isSelected" />
+  <label class="sample-checkbox">&nbsp;&nbsp;
+    <input type="checkbox" [(ngModel)]="s.isSelected" />&nbsp;
     T{{ j + 1 }}
   </label>
 
-    <button class="delete-btn" (click)="deleteSample(j)">❌ Delete</button>
+    <button style="background: none" class="delete-btn" (click)="deleteSample(j)">❌</button></div>
 
   <div class="code-actions" style="display: flex; justify-content: space-between;">
     <!-- Editable input -->
@@ -467,7 +481,7 @@
     </div>
   </div>
   <div>
-  
+  &nbsp;
   <!-- Run button for each sample -->
   <button 
     class="run-btn"
@@ -503,11 +517,11 @@
 
 </div>
 
-    <div *ngIf="error" class="error">{{ error }}</div>
+    <div *ngIf="success" class="success">{{ success }}</div>
 
 <div class="button-group">
     <!-- <button  [disabled]="cod.verify" (click)="verifySplitQuestion(cod)">{{ cod.verify ? 'Verifing' : '✅ Verify' }}</button> -->
-    <button  (click)="uploadCOD(cod)">{{ cod.upload ? 'Uploaded' : '📤 Upload' }}</button>
+    <button [disabled]="cod.upload" (click)="uploadCOD(cod)">{{ cod.upload ? 'Uploaded' : '📤 Upload' }}</button>
     <!-- <button (click)="generateSolution(cod)">{{ cod.upload ? 'Generate Solution' : '📤 Solution Generated' }}</button> -->
   </div>
 

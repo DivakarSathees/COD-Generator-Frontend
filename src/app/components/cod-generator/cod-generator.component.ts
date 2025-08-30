@@ -22,10 +22,12 @@ export class CodGeneratorComponent {
   selectedCreator: string = '';
   loading = false;
   error = '';
+  success = '';
   inputcheck: any;
   copiedIndex: number | null = null;
   selectedQbId: string | null = null;
   uniqueCreators: string[] = [];
+  solutionGenerated= false;
   cods: any;
   subtopics: any[] = [];
   mode: 'form' | 'prompt' = 'form';
@@ -71,9 +73,9 @@ export class CodGeneratorComponent {
 
     this.promptForm = this.fb.group({
       prompt: ['generate a scenario based hard level java programing description on method overloading', Validators.required],
-      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJjN1FKU1MrbHBwaVNJY0ExZXNYVHR3PT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NTc5NTc5MywiZXhwIjoxNzU1ODM4OTkzfQ.K7GPVjK6cNcg48TlXmY-tB47YB5ycxJ4H-wmh198ne0', Validators.required], // Token for authentication
+      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJEWVVVSjY0V0JmemZiNVZyZncrZHVRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NjU3MjU0NywiZXhwIjoxNzU2NjE1NzQ3fQ.jOIJQVzkNwAU8IF1J4OuFIKYYVUmbY0OhyqzEc8bg8Y', Validators.required], // Token for authentication
       qb_id: [''], // Question bank ID
-      searchText: ['dummy'],
+      searchText: ['Dummy_testing_COD_creation'],
       code_snippet: [0, Validators.required],
       sub_topic_id: [''],
       topic_id: [''],
@@ -169,6 +171,9 @@ export class CodGeneratorComponent {
       //   this.loading = false;
       // },
       next: (res: any) => {
+        this.language = res.response[0].language || '';
+      console.log(res.response[0].language);
+      // this.cods = res.response;
       this.cods = res.response.map((cod: any) => ({
         ...cod,
         // questionText: this.getQuestionText(mcq.question_data),
@@ -217,6 +222,7 @@ export class CodGeneratorComponent {
     this.codService.generateSolution(cod).subscribe({
       next: (res: any) => {
         console.log('Solution generated:', res);
+        this.solutionGenerated = true
         this.solution = res.response[0].solution_data;
         this.sampleInput = res.response[0].samples || '';
         this.sampleInput.forEach((sample: any) => {
@@ -227,7 +233,7 @@ export class CodGeneratorComponent {
         
         cod.code = res.response[0].solution_data;
         cod.outputerror = res.response.error || '';
-        cod.upload = true; // Set upload to true after successful generation
+        // cod.upload = true; // Set upload to true after successful generation
       },
       error: (err) => {
         cod.outputerror = 'Error generating solution';
@@ -239,10 +245,10 @@ export class CodGeneratorComponent {
 
   runCode(code: any, i: number, cod: any) {
     cod.runcode = true; // Set runcode to true when running code
-    this.codService.runCode({ code, input: cod.input }).subscribe({
+    this.codService.runCode({ code, input: cod.input, language: this.language }).subscribe({
       next: (res: any) => {
         console.log('Code executed successfully:', res);
-        cod.codeOutput = res.output || '';
+        cod.codeOutput = res.output+'\n' || '';
         if (res.error) {
           cod.outputerror = res.error + " - " +res.details;
         }
@@ -277,10 +283,13 @@ runSample(code: string, index: number, sample: any) {
   sample.running = true;
   sample.output = '';
   sample.error = '';
+    console.log(sample);
 
-  this.codService.runCode({code, input: sample.input}).subscribe({
+
+  this.codService.runCode({code, input: sample.input, language: this.language}).subscribe({
+    
     next: (res: any) => {
-      sample.output = res.output || '';
+      sample.output = res.output+'\n' || '';
       sample.timeBytes = res.timeBytes || '';
       sample.memBytes = String(res.memBytes || '');
       sample.timeLimit = null;
@@ -482,7 +491,7 @@ uploadCOD(cod:any){
           output: sample.output,
           memBytes: sample.memBytes || '0',
           timeBytes: sample.timeBytes || 0,
-          difficulty: cod.difficulty_level || 'Medium',
+          difficulty: sample.difficulty || 'Medium',
           score: sample.score || 25,
           timeLimit: null,
           outputLimit: null,
@@ -522,8 +531,13 @@ uploadCOD(cod:any){
   // Call the uploadCods method from the service
   this.codService.uploadCods(payload, this.promptForm.value.token ).subscribe({
     next: (res: any) => {
-      console.log('Upload successful:', res);
-      this.error = 'COD uploaded successfully!';
+      console.log('Upload successful:', res.response[0].status);
+      if (res.response[0].status === 'Uploaded') {
+        cod.upload = true; 
+        this.success = 'COD uploaded successfully!';
+      } else {
+        this.error = 'Failed to upload COD.';
+      }
       // Optionally, reset the form or perform other actions
       // this.codForm.reset();
       // this.promptForm.reset();

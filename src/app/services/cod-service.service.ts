@@ -32,6 +32,19 @@ export class CodServiceService {
   }
 
   runCode(code: any): Observable<any> {
+    if(code.language === 'Python'){
+      return this.http.post(`${this.apiUrl}/run-python`, code);
+    } else if(code.language === 'C#'){
+      return this.http.post(`${this.apiUrl}/run-csharp`, code);
+    } else if(code.language === 'javascript'){
+      return this.http.post(`${this.apiUrl}/run-javascript`, code);
+    } else if(code.language === 'c'){
+      return this.http.post(`${this.apiUrl}/run-c`, code);
+    } else if(code.language === 'csharp'){
+      return this.http.post(`${this.apiUrl}/run-csharp`, code);
+    } else if(code.language === 'ruby'){
+      return this.http.post(`${this.apiUrl}/run-ruby`, code);
+    }
     return this.http.post(`${this.apiUrl}/run-java`, code);
   }
 
