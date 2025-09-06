@@ -6,11 +6,19 @@ import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { CodServiceService } from '../../services/cod-service.service';
 import { QuillEditorComponent } from 'ngx-quill';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-cod-generator',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, MonacoEditorModule, NgSelectModule,QuillEditorComponent ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HttpClientModule, MonacoEditorModule, NgSelectModule,QuillEditorComponent,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatTooltipModule
+   ],
   templateUrl: './cod-generator.component.html',
   styleUrl: './cod-generator.component.css'
 })
@@ -51,6 +59,13 @@ export class CodGeneratorComponent {
     ]
   };
 
+  sampleFormatOptions = [
+    { value: 'detailed', label: 'Detailed', title: `<h3>Problem Statement: Bike Number Plate Verification System</h3><h4>Objective</h4><p>Create a Bike Number Plate Verification System using C# OOP principles. The system should validate number plates based on specific rules and check if they are allowed on the road. Implement classes and methods to handle the verification process dynamically.</p><h4>Requirements</h4><p><strong>1. NumberPlate Class</strong>:</p><ul><li><strong>Properties</strong>:</li><li class="ql-indent-1">PlateNumber (string): The number plate of the bike.</li><li class="ql-indent-1">IsValid (bool): Indicates if the number plate is valid based on the rules.</li><li><strong>Methods</strong>:</li><li class="ql-indent-1"><strong>Validate()</strong>: Validates the number plate based on the following rules:</li><li class="ql-indent-2">The length of the number plate should be 9</li><li class="ql-indent-2">The number plate must start with two uppercase letters.</li><li class="ql-indent-2">Followed by two digits.</li><li class="ql-indent-2">Followed by a hyphen.</li><li class="ql-indent-2">Ends with four digits.</li><li class="ql-indent-1">Example of a valid number plate: "AB12-3456".</li></ul><p><strong>2. Bike Class</strong>:</p><ul><li>Properties:</li><li class="ql-indent-1">BikeID (string): Unique identifier for the bike.</li><li class="ql-indent-1">NumberPlate (NumberPlate): The bike's number plate.</li><li>Methods:</li><li class="ql-indent-1"><strong>IsNumberPlateValid()</strong>: Checks if the bike's number plate is valid and returns the result.</li></ul><p><strong>3. VerificationSystem Class</strong>:</p><ul><li>Properties:</li><li class="ql-indent-1">Bikes (List&lt;Bike&gt;): List of all bikes to be verified.</li><li>Methods:</li><li class="ql-indent-1"><strong>AddBike(Bike)</strong>: Adds a new bike to the system.</li><li class="ql-indent-1"><strong>VerifyAllBikes()</strong>: Verifies all bikes in the system and prints the validity of their number plates.</li></ul>` },
+    { value: 'simple', label: 'Simple', title: 'Sample Coding Format: Write a function to reverse a string.' },
+    { value: 'theory', label: 'Theory', title: 'Sample Theory Format: Explain OOP concepts with examples.' },
+    { value: 'fillblank', label: 'Fill in the Blank', title: 'Sample Fill in the Blank: The capital of France is ____.' }
+  ];
+
   
   constructor(private fb: FormBuilder, private codService: CodServiceService) {
     this.codForm = this.fb.group({
@@ -73,10 +88,11 @@ export class CodGeneratorComponent {
 
     this.promptForm = this.fb.group({
       prompt: ['generate a scenario based hard level java programing description on method overloading', Validators.required],
-      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJEWVVVSjY0V0JmemZiNVZyZncrZHVRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NjU3MjU0NywiZXhwIjoxNzU2NjE1NzQ3fQ.jOIJQVzkNwAU8IF1J4OuFIKYYVUmbY0OhyqzEc8bg8Y', Validators.required], // Token for authentication
+      token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJMZStYbXRMVlhGY1BwWEVpNDJsbXdRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NzE3NDk5NiwiZXhwIjoxNzU3MjE4MTk2fQ.KMwagd95-1rDRiMhWTnDBbobe7oN4WABWxHDbsTgcyo', Validators.required], // Token for authentication
       qb_id: [''], // Question bank ID
       searchText: ['Dummy_testing_COD_creation'],
       code_snippet: [0, Validators.required],
+      format: ['detailed', Validators.required],
       sub_topic_id: [''],
       topic_id: [''],
       subject_id: [''],
@@ -309,6 +325,8 @@ runSample(code: string, index: number, sample: any) {
 }
 
 uploadCOD(cod:any){
+  this.success = '';
+  this.error = '';
   console.log(cod);
   console.log(this.sampleInput);
   console.log(this.solution);
@@ -316,6 +334,11 @@ uploadCOD(cod:any){
   // if sampltinput.error is there send a toast error message
   if (this.sampleInput.some((sample: any) => sample.error)) {
     this.error = 'Please resolve all sample errors before uploading.';
+    return;
+  }
+
+  if (this.sampleInput.some((sample: any) => !sample.output)){
+    this.error = 'Please run all samples before uploading or remove unused testcases.';
     return;
   }
   
@@ -527,6 +550,19 @@ uploadCOD(cod:any){
   };  
 
   console.log('Payload to upload:', payload);
+
+  // if in payload in total of testcases.score is not 100 show an error message
+  const totalScore = payload.testcases.reduce((sum: number, tc: any) => sum + Number(tc.score || 0), 0);
+  if (totalScore !== 100) {
+    this.error = 'Total score of all test cases must be 100. Currently it is ' + totalScore;
+    return;
+  }
+
+  // if sampli_io is empty show an error message
+  if (payload.sample_io === '[]') {
+    this.error = 'Please add at least one sample input/output before uploading.';
+    return;
+  }
 
   // Call the uploadCods method from the service
   this.codService.uploadCods(payload, this.promptForm.value.token ).subscribe({

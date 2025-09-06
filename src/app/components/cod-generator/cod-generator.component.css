@@ -309,6 +309,28 @@ button[disabled] {
     font-weight: 500;
   }
 
+  .custom-tooltip {
+  max-width: 400px;
+  white-space: normal;
+  background: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.custom-tooltip h3 {
+  margin: 4px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.custom-tooltip ul {
+  margin: 4px 0;
+  padding-left: 16px;
+}
+
+
    .success {
     background: #d7fed9;
     color: #27ae60;

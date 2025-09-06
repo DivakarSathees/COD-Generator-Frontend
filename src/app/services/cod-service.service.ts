@@ -7,8 +7,8 @@ import { Observable } from 'rxjs/internal/Observable';
 })
 export class CodServiceService {
 
-  // private apiUrl = 'http://localhost:3000';
-  private apiUrl = 'https://cod-generator-backend.onrender.com';
+  private apiUrl = 'http://localhost:3000';
+  // private apiUrl = 'https://cod-generator-backend.onrender.com';
 
   constructor(private http: HttpClient) { }
 
@@ -39,7 +39,7 @@ export class CodServiceService {
       return this.http.post(`${this.apiUrl}/run-csharp`, code);
     } else if(code.language === 'javascript'){
       return this.http.post(`${this.apiUrl}/run-javascript`, code);
-    } else if(code.language === 'c'){
+    } else if(code.language === 'C'){
       return this.http.post(`${this.apiUrl}/run-c`, code);
     } else if(code.language === 'csharp'){
       return this.http.post(`${this.apiUrl}/run-csharp`, code);

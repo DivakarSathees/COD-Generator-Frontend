@@ -71,13 +71,49 @@
     <form *ngIf="mode === 'prompt'" [formGroup]="promptForm" (ngSubmit)="generateFromPrompt()">
       <label>Enter Custom Prompt:</label>
       <textarea formControlName="prompt" name="prompt" rows="6" cols="60" required></textarea>
-      <div>
+      <!-- <div>
         <label>Code Snippet Based:</label>
         <select formControlName="code_snippet">
           <option value=1>Yes</option>
           <option value=0>No</option>
         </select>
-      </div>
+      </div> -->
+        <div>
+          <label>Select Format:</label>
+          <select formControlName="format">
+            <option *ngFor="let opt of sampleFormatOptions" 
+                    [value]="opt.value" 
+                    [title]="opt.title">
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+
+        <!-- <mat-form-field appearance="fill">
+          <mat-label>Select Format</mat-label>
+          <mat-select formControlName="format">
+            <mat-option *ngFor="let opt of sampleFormatOptions"
+                        [value]="opt.value"
+                        [matTooltip]="opt.title"
+                        matTooltipClass="custom-tooltip"
+                        [matTooltipPosition]="'right'">
+              {{ opt.label }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+
+        <div>
+  <label>Select Format:</label>
+  <select formControlName="format">
+    <option *ngFor="let opt of sampleFormatOptions" 
+            [value]="opt.value" 
+            [title]="opt.title">
+      {{ opt.label }}
+    </option>
+  </select>
+</div> -->
+
       <div>
         <label>Token:</label>
         <input type="text" formControlName="token" />
@@ -215,7 +251,7 @@
     <option value="python">Python</option>
     <option value="javascript">JavaScript</option>
     <option value="Java">Java</option>
-    <option value="c">C</option>
+    <option value="C">C</option>
     <option value="cpp">C++</option>
     <option value="C#">C#</option>
     <option value="ruby">Ruby</option>
@@ -492,7 +528,8 @@
 
   <!-- ✅ Disable weightage until Run Code executed at least once, 
        or if marked as official -->
-  <input 
+       <!-- <div *ngIf="s.isSelected"> -->
+  <input *ngIf="!s.isSelected"
     type="number" 
     [(ngModel)]="s.score" 
     placeholder="Weightage" 
@@ -500,13 +537,14 @@
     style="width: 100px; margin-left: 10px;"
     [disabled]="!s.output || s.isSelected">
 
-  <select [(ngModel)]="s.difficulty" 
+  <select *ngIf="!s.isSelected" [(ngModel)]="s.difficulty" 
     [disabled]="!s.output || s.isSelected" style="width: auto;">
     <option value="Easy">Easy</option>
     <option value="Medium">Medium</option>
     <option value="Hard">Hard</option>
   </select>
 </div>
+<!-- </div> -->
 </div>
 
 <!-- ✅ Add new sample button -->
@@ -518,6 +556,8 @@
 </div>
 
     <div *ngIf="success" class="success">{{ success }}</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
 
 <div class="button-group">
     <!-- <button  [disabled]="cod.verify" (click)="verifySplitQuestion(cod)">{{ cod.verify ? 'Verifing' : '✅ Verify' }}</button> -->
