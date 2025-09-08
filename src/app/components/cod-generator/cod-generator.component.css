@@ -157,6 +157,7 @@ button[disabled] {
 
   .cod-generator-container {
     max-width: 1200px;
+    width: -webkit-fill-available;
     margin: 0 auto;
     padding: 2rem;
     min-height: 100vh;
@@ -1267,4 +1268,67 @@ button[disabled] {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+
+/* Sidebar Container */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  backdrop-filter: blur(10px);
+  min-height: 100%;
+}
+
+/* Sidebar Title */
+.sidebar h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  padding-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Session List */
+.sidebar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  background: rgba(255,255,255,0.05);
+}
+
+.sidebar li:hover {
+  background: rgba(255,255,255,0.15);
+  transform: translateX(4px);
+}
+
+/* Active Session */
+.sidebar li.active {
+  background: rgba(255,255,255,0.25);
+  font-weight: 600;
+  color: #fff;
+  border-left: 4px solid #ffd700;
+  padding-left: calc(1rem - 4px);
+}
+
+/* Session Text */
+.sidebar li span {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

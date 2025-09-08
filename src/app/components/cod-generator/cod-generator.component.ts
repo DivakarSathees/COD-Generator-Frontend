@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MonacoEditorModule } from '@materia-ui/ngx-monaco-editor';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -22,7 +22,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: './cod-generator.component.html',
   styleUrl: './cod-generator.component.css'
 })
-export class CodGeneratorComponent {
+export class CodGeneratorComponent implements OnInit {
+
+  ngOnInit(): void {
+    this.getAllSessions();
+  }
+  
+
   questionBanks: any[] = [];
   filteredQuestionBanks: any[] = [];
   codForm: FormGroup;
@@ -48,6 +54,8 @@ export class CodGeneratorComponent {
   code: string= '';
   solution: any;
   sampleInput:any
+  sessions: any;
+  selectedSessionId: string = '';
   // weightage: any;
 
   toolbarOptions = {
@@ -59,11 +67,19 @@ export class CodGeneratorComponent {
     ]
   };
 
+    // Sidebar sessions
+    // sessions: Array<{ id: string; name: string; createdAt: Date }> = [
+    //   { id: '1', name: 'Session 1', createdAt: new Date('2025-09-01T10:00:00') },
+    //   { id: '2', name: 'Session 2', createdAt: new Date('2025-09-05T14:30:00') },
+    //   { id: '3', name: 'Session 3', createdAt: new Date('2025-09-08T09:15:00') }
+    // ];
+    
+
   sampleFormatOptions = [
     { value: 'detailed', label: 'Detailed', title: `<h3>Problem Statement: Bike Number Plate Verification System</h3><h4>Objective</h4><p>Create a Bike Number Plate Verification System using C# OOP principles. The system should validate number plates based on specific rules and check if they are allowed on the road. Implement classes and methods to handle the verification process dynamically.</p><h4>Requirements</h4><p><strong>1. NumberPlate Class</strong>:</p><ul><li><strong>Properties</strong>:</li><li class="ql-indent-1">PlateNumber (string): The number plate of the bike.</li><li class="ql-indent-1">IsValid (bool): Indicates if the number plate is valid based on the rules.</li><li><strong>Methods</strong>:</li><li class="ql-indent-1"><strong>Validate()</strong>: Validates the number plate based on the following rules:</li><li class="ql-indent-2">The length of the number plate should be 9</li><li class="ql-indent-2">The number plate must start with two uppercase letters.</li><li class="ql-indent-2">Followed by two digits.</li><li class="ql-indent-2">Followed by a hyphen.</li><li class="ql-indent-2">Ends with four digits.</li><li class="ql-indent-1">Example of a valid number plate: "AB12-3456".</li></ul><p><strong>2. Bike Class</strong>:</p><ul><li>Properties:</li><li class="ql-indent-1">BikeID (string): Unique identifier for the bike.</li><li class="ql-indent-1">NumberPlate (NumberPlate): The bike's number plate.</li><li>Methods:</li><li class="ql-indent-1"><strong>IsNumberPlateValid()</strong>: Checks if the bike's number plate is valid and returns the result.</li></ul><p><strong>3. VerificationSystem Class</strong>:</p><ul><li>Properties:</li><li class="ql-indent-1">Bikes (List&lt;Bike&gt;): List of all bikes to be verified.</li><li>Methods:</li><li class="ql-indent-1"><strong>AddBike(Bike)</strong>: Adds a new bike to the system.</li><li class="ql-indent-1"><strong>VerifyAllBikes()</strong>: Verifies all bikes in the system and prints the validity of their number plates.</li></ul>` },
     { value: 'simple', label: 'Simple', title: 'Sample Coding Format: Write a function to reverse a string.' },
-    { value: 'theory', label: 'Theory', title: 'Sample Theory Format: Explain OOP concepts with examples.' },
-    { value: 'fillblank', label: 'Fill in the Blank', title: 'Sample Fill in the Blank: The capital of France is ____.' }
+    // { value: 'theory', label: 'Theory', title: 'Sample Theory Format: Explain OOP concepts with examples.' },
+    // { value: 'fillblank', label: 'Fill in the Blank', title: 'Sample Fill in the Blank: The capital of France is ____.' }
   ];
 
   
@@ -86,6 +102,7 @@ export class CodGeneratorComponent {
       subject_name: [''],
     });
 
+
     this.promptForm = this.fb.group({
       prompt: ['generate a scenario based hard level java programing description on method overloading', Validators.required],
       token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJMZStYbXRMVlhGY1BwWEVpNDJsbXdRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NzE3NDk5NiwiZXhwIjoxNzU3MjE4MTk2fQ.KMwagd95-1rDRiMhWTnDBbobe7oN4WABWxHDbsTgcyo', Validators.required], // Token for authentication
@@ -100,6 +117,29 @@ export class CodGeneratorComponent {
       subject_name: [''],
     });
   }
+
+    getAllSessions(){
+    this.codService.getAllSessions().subscribe({
+    next: (res: any) => {
+      console.log('Sessions fetched:', res);
+      this.sessions = res.sessions;
+      if(this.sessions.length > 0){
+        this.selectedSessionId = this.sessions[0].id;
+      } else {
+        this.selectedSessionId = '';
+      }
+    } });
+  }
+
+  // selectedSessionId = this.sessions[0]?.id || '';
+
+    selectSession(session: any) {
+      this.selectedSessionId = session;
+      console.log(this.selectedSessionId);
+      sessionStorage.setItem('codSessionId', this.selectedSessionId);
+      // Optionally, add logic to load session-specific data
+    }
+
 
   onSubtopicChangeById(event: Event) {
     console.log(event);
@@ -159,6 +199,9 @@ export class CodGeneratorComponent {
     const payload = this.promptForm.value;
     console.log(payload);
     this.selectedQbId = '';
+    // include sessionId from session storage in the payload
+    const sessionId = sessionStorage.getItem('codSessionId');
+    payload.sessionId = sessionId;
 
     const qbPayload = {
       search: this.promptForm.value.searchText,
@@ -187,10 +230,13 @@ export class CodGeneratorComponent {
       //   this.loading = false;
       // },
       next: (res: any) => {
-        this.language = res.response[0].language || '';
-      console.log(res.response[0].language);
+        
+        this.language = res.response.result[0].language || '';
+      console.log(res.response.sessionId);
+      // store sessionId in session storage
+      sessionStorage.setItem('codSessionId', res.response.sessionId);
       // this.cods = res.response;
-      this.cods = res.response.map((cod: any) => ({
+      this.cods = res.response.result.map((cod: any) => ({
         ...cod,
         // questionText: this.getQuestionText(mcq.question_data),
         // codeSnippet: this.getCodeSnippet(mcq.question_data),

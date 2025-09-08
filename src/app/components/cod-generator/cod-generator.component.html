@@ -1,3 +1,15 @@
+<!-- include a sidebar that displays all sesstions -->
+<!-- Sidebar for displaying all sessions -->
+<div style="display: flex;">
+<aside class="sidebar">
+  <h3>Sessions</h3>
+  <ul>
+    <li *ngFor="let session of sessions" [class.active]="session === selectedSessionId"  (click)="selectSession(session)">
+      <span>{{ session }}</span>
+      <!-- <span class="session-meta">{{ session.createdAt | date:'short' }}</span> -->
+    </li>
+  </ul>
+</aside>
 
 
 <div class="cod-generator-container">
@@ -569,5 +581,7 @@
       </div>
       
     </div>
+    </div>
+  </div>
   </div>
   

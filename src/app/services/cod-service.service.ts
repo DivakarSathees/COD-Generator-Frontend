@@ -16,6 +16,14 @@ export class CodServiceService {
     return this.http.post(`${this.apiUrl}/generate-cod-description`, data);
   }
 
+  getAllSessions(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/sessions`);
+  }
+
+  getSessionById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/sessions/${id}`); 
+  }
+
   getQuestionBanks(data: any) {
     return this.http.post(`${this.apiUrl}/fetch-qbs`, data);
   }
