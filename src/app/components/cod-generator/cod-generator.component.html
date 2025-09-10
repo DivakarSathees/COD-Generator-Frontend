@@ -87,18 +87,33 @@
       <label>Enter Custom Prompt:</label>
       <textarea formControlName="prompt" name="prompt" rows="6" cols="60" required></textarea>
       </div>
-      <div>
+
+      <div *ngIf="newSession">
+        <label>Language:</label>
+        <input type="text" formControlName="language" />
+      </div>
+
+      <div *ngIf="newSession">
+        <label>Topic:</label>
+        <input type="text" formControlName="topic" />
+      </div>
+      <div *ngIf="!newSession">
         <label>Language:</label>
         <select formControlName="language">
           <option value=Java>Java</option>
           <option value=C#>C#</option>
         </select>
       </div>
-      <div>
+      <div *ngIf="!newSession">
         <label>Topic:</label>
         <select formControlName="topic">
-          <option value="Method Overloading">Method Overloading</option>
-          <option value="OOPS">OOPS</option>
+          <!-- <option value="Method Overloading">Method Overloading</option>
+          <option value="OOPS">OOPS</option> -->
+          <option *ngFor="let topic of uniqueTopics" 
+                  [value]="topic" 
+                  [title]="topic">
+            {{ topic }}
+          </option>
         </select>
       </div>
         <div>

@@ -77,6 +77,7 @@ export class CodGeneratorComponent implements OnInit {
     //   { id: '3', name: 'Session 3', createdAt: new Date('2025-09-08T09:15:00') }
     // ];
     
+    uniqueTopics: string[] = [];
 
   sampleFormatOptions = [
     { value: 'detailed', label: 'Detailed', title: `<h3>Problem Statement: Bike Number Plate Verification System</h3><h4>Objective</h4><p>Create a Bike Number Plate Verification System using C# OOP principles. The system should validate number plates based on specific rules and check if they are allowed on the road. Implement classes and methods to handle the verification process dynamically.</p><h4>Requirements</h4><p><strong>1. NumberPlate Class</strong>:</p><ul><li><strong>Properties</strong>:</li><li class="ql-indent-1">PlateNumber (string): The number plate of the bike.</li><li class="ql-indent-1">IsValid (bool): Indicates if the number plate is valid based on the rules.</li><li><strong>Methods</strong>:</li><li class="ql-indent-1"><strong>Validate()</strong>: Validates the number plate based on the following rules:</li><li class="ql-indent-2">The length of the number plate should be 9</li><li class="ql-indent-2">The number plate must start with two uppercase letters.</li><li class="ql-indent-2">Followed by two digits.</li><li class="ql-indent-2">Followed by a hyphen.</li><li class="ql-indent-2">Ends with four digits.</li><li class="ql-indent-1">Example of a valid number plate: "AB12-3456".</li></ul><p><strong>2. Bike Class</strong>:</p><ul><li>Properties:</li><li class="ql-indent-1">BikeID (string): Unique identifier for the bike.</li><li class="ql-indent-1">NumberPlate (NumberPlate): The bike's number plate.</li><li>Methods:</li><li class="ql-indent-1"><strong>IsNumberPlateValid()</strong>: Checks if the bike's number plate is valid and returns the result.</li></ul><p><strong>3. VerificationSystem Class</strong>:</p><ul><li>Properties:</li><li class="ql-indent-1">Bikes (List&lt;Bike&gt;): List of all bikes to be verified.</li><li>Methods:</li><li class="ql-indent-1"><strong>AddBike(Bike)</strong>: Adds a new bike to the system.</li><li class="ql-indent-1"><strong>VerifyAllBikes()</strong>: Verifies all bikes in the system and prints the validity of their number plates.</li></ul>` },
@@ -155,6 +156,10 @@ export class CodGeneratorComponent implements OnInit {
          sessionStorage.setItem('codSessionId', this.selectedSessionId);
         const lang = session.name.split(' - ')[0];
         const topic = session.name.split(' - ')[1];
+        // push this topic to uniqueTopics if not already present
+        if (!this.uniqueTopics.includes(topic)) {
+          this.uniqueTopics.push(topic);
+        }
       console.log(lang);
       
       this.promptForm.patchValue({ language: lang, topic: topic });
