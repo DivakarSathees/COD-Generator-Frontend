@@ -4,8 +4,8 @@
 <aside class="sidebar">
   <h3>Sessions</h3>
   <ul>
-    <li *ngFor="let session of sessions" [class.active]="session === selectedSessionId"  (click)="selectSession(session)">
-      <span>{{ session }}</span>
+    <li *ngFor="let session of sessions" [class.active]="session._id === selectedSessionId"  (click)="selectSession(session)">
+      <span>{{ session.name }}</span>
       <!-- <span class="session-meta">{{ session.createdAt | date:'short' }}</span> -->
     </li>
   </ul>
@@ -13,16 +13,18 @@
 
 
 <div class="cod-generator-container">
-    <h2>COD Generator</h2>
-  
-    <label>
+    
+  <h2>COD Generator</h2>
+  <div style="display: flex;flex-direction: row-reverse;margin-bottom: 10px;">
+  <button  type="submit" (click)="createNewSession()">➕ New Session</button> </div>
+    <!-- <label>
       <input type="radio" name="mode" value="form" [(ngModel)]="mode" />
       Use Form
     </label>
     <label>
       <input type="radio" name="mode" value="prompt" [(ngModel)]="mode" />
       Use Custom Prompt
-    </label>
+    </label> -->
   
     <!-- <form *ngIf="mode === 'form'" [formGroup]="codForm" (ngSubmit)="generateFromForm()">
       <div>
@@ -80,16 +82,25 @@
       </button>
     </form> -->
   
-    <form *ngIf="mode === 'prompt'" [formGroup]="promptForm" (ngSubmit)="generateFromPrompt()">
+    <form [formGroup]="promptForm" (ngSubmit)="generateFromPrompt()">
+      <div *ngIf="newSession">
       <label>Enter Custom Prompt:</label>
       <textarea formControlName="prompt" name="prompt" rows="6" cols="60" required></textarea>
-      <!-- <div>
-        <label>Code Snippet Based:</label>
-        <select formControlName="code_snippet">
-          <option value=1>Yes</option>
-          <option value=0>No</option>
+      </div>
+      <div>
+        <label>Language:</label>
+        <select formControlName="language">
+          <option value=Java>Java</option>
+          <option value=C#>C#</option>
         </select>
-      </div> -->
+      </div>
+      <div>
+        <label>Topic:</label>
+        <select formControlName="topic">
+          <option value="Method Overloading">Method Overloading</option>
+          <option value="OOPS">OOPS</option>
+        </select>
+      </div>
         <div>
           <label>Select Format:</label>
           <select formControlName="format">
@@ -100,6 +111,15 @@
             </option>
           </select>
         </div>
+
+        <div>
+        <label>Difficulty Level:</label>
+        <select formControlName="difficulty_level">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
 
         <!-- <mat-form-field appearance="fill">
           <mat-label>Select Format</mat-label>

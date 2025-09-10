@@ -20,8 +20,8 @@ export class CodServiceService {
     return this.http.get(`${this.apiUrl}/sessions`);
   }
 
-  getSessionById(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/sessions/${id}`); 
+  getConversationsById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/conversations/${id}`); 
   }
 
   getQuestionBanks(data: any) {

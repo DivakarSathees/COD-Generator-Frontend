@@ -55,7 +55,10 @@ export class CodGeneratorComponent implements OnInit {
   solution: any;
   sampleInput:any
   sessions: any;
+  selecetSessionName: string = '';
+  selectedSessionLanguage: string = '';
   selectedSessionId: string = '';
+  newSession: any;
   // weightage: any;
 
   toolbarOptions = {
@@ -104,11 +107,14 @@ export class CodGeneratorComponent implements OnInit {
 
 
     this.promptForm = this.fb.group({
-      prompt: ['generate a scenario based hard level java programing description on method overloading', Validators.required],
+      prompt: ['', Validators.required],
       token: ['eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vyc19kb21haW5faWQiOjQzMTY0NzUsInVzZXJfaWQiOiJiZDNjMmY0ZC1iNTNkLTRkZTYtODJjOS0wMDQxM2I3MDc1NmMiLCJzY2hvb2xfaWQiOiJmZTY1MDJmMC1kZmU1LTRlYzMtYjE4MS0zZThlMzRiMTk4OTQiLCJlbWFpbCI6ImRpdmFrYXIuc0BpYW1uZW8uYWkiLCJlbWFpbF92ZXJpZmllZCI6MSwibmFtZSI6IkRpdmFrYXIkUyIsInBob25lIjoiOTg5NDE1NzYxOSIsInBob25lX3ZlcmlmaWVkIjowLCJwcm9maWxlX3BpYyI6bnVsbCwiZ2VuZGVyIjoiTWFsZSIsInJvbGxfbm8iOm51bGwsInBvcnRhbF9hY2Nlc3Nfc3RhdHVzIjpudWxsLCJlbWFpbF9yZXF1ZXN0ZWRfaGlzdG9yeSI6bnVsbCwiZW1haWxfcmVxdWVzdGVkIjpudWxsLCJwcmltYXJ5X2VtYWlsIjoiZGl2YWthci5zQGlhbW5lby5haSIsInBhcmVudF9jb250YWN0IjpudWxsLCJwaG9uZV9udW1iZXIiOnsiY29kZSI6Iis5MSIsIm51bWJlciI6OTg5NDE1NzYxOX0sImlzX2ZvbGxvd2luZ19wdWJsaWNfZmVlZCI6ZmFsc2UsImJhZGdlIjowLCJzdXBlcmJhZGdlIjowLCJjb25zdW1lZF9iYWRnZSI6MCwiY29uc3VtZWRfc3VwZXJiYWRnZSI6MCwibWFubnVhbGJhZGdlcyI6bnVsbCwic3RhdHVzIjoiSW52aXRlZCIsImRvYiI6bnVsbCwic3RhZmZfdHlwZSI6IkludGVybmFsIiwidmVyaWZpZWRfcGljIjpudWxsLCJhcHBsaWNhdGlvbl9ubyI6bnVsbCwiaGFzaF9pZCI6IjczOWM0Y2ZmNTc0OWQ2YTIzYzIzMTU2N2FmMmY3ODliZjM1ZmE5MTEiLCJyZXNldF9wYXNzd29yZCI6ZmFsc2UsImNyZWF0ZWRBdCI6IjIwMjMtMDctMjBUMTg6MTQ6NDIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjQtMTItMTlUMTM6MTA6MzAuMDAwWiIsImRlbGV0ZWRBdCI6bnVsbCwicmVkaXNSb2xlIjoiU3RhZmYiLCJzZXNzaW9uSUQiOiJMZStYbXRMVlhGY1BwWEVpNDJsbXdRPT0iLCJlbmFibGVUd29GYWN0b3JBdXRoZW50aWNhdGlvbiI6ZmFsc2UsImlhdCI6MTc1NzE3NDk5NiwiZXhwIjoxNzU3MjE4MTk2fQ.KMwagd95-1rDRiMhWTnDBbobe7oN4WABWxHDbsTgcyo', Validators.required], // Token for authentication
       qb_id: [''], // Question bank ID
       searchText: ['Dummy_testing_COD_creation'],
       code_snippet: [0, Validators.required],
+      language: ['Java', Validators.required],
+      difficulty_level: ['Easy', Validators.required],
+      topic: ['', Validators.required],
       format: ['detailed', Validators.required],
       sub_topic_id: [''],
       topic_id: [''],
@@ -134,10 +140,48 @@ export class CodGeneratorComponent implements OnInit {
   // selectedSessionId = this.sessions[0]?.id || '';
 
     selectSession(session: any) {
-      this.selectedSessionId = session;
-      console.log(this.selectedSessionId);
-      sessionStorage.setItem('codSessionId', this.selectedSessionId);
-      // Optionally, add logic to load session-specific data
+      this.newSession = false;
+      // this.selectedSessionId = session._id;
+      if (this.selectedSessionId === session._id) {
+        // If already selected, deselect
+        this.selectedSessionId = '';
+        sessionStorage.removeItem('codSessionId');
+        this.promptForm.get('language')?.enable(); // make editable again
+        this.promptForm.get('topic')?.enable();
+      } else {
+        // Otherwise select
+        this.selectedSessionId = session._id;
+        this.promptForm.get('prompt')?.setValue(''); // clear the prompt field
+         sessionStorage.setItem('codSessionId', this.selectedSessionId);
+        const lang = session.name.split(' - ')[0];
+        const topic = session.name.split(' - ')[1];
+      console.log(lang);
+      
+      this.promptForm.patchValue({ language: lang, topic: topic });
+      this.promptForm.get('language')?.setValue(lang);
+      this.promptForm.get('topic')?.setValue(topic);
+
+      this.promptForm.get('language')?.disable();
+      this.promptForm.get('topic')?.disable();
+      }
+      console.log(session);
+      // set the forms value of lanaguage field by session.name but session name is like java - oops, from this split till -
+      
+
+
+
+      this.codService.getConversationsById(this.selectedSessionId).subscribe({
+      next: (res: any) => {
+        console.log('Conversations fetched for session:', res);
+      } });
+    }
+
+    createNewSession() {
+      this.newSession = true
+      this.promptForm.get('language')?.enable(); // make editable again
+        this.promptForm.get('topic')?.enable();
+      sessionStorage.removeItem('codSessionId');
+      this.selectedSessionId = '';
     }
 
 
@@ -197,11 +241,15 @@ export class CodGeneratorComponent implements OnInit {
     this.error = '';
     // const payload = { prompt: this.customPrompt };
     const payload = this.promptForm.value;
-    console.log(payload);
     this.selectedQbId = '';
     // include sessionId from session storage in the payload
     const sessionId = sessionStorage.getItem('codSessionId');
     payload.sessionId = sessionId;
+    payload.language = this.promptForm.value.language;
+    payload.topic = this.promptForm.value.topic;
+    payload.language = this.promptForm.get('language')?.value;
+    payload.topic = this.promptForm.get('topic')?.value;
+    console.log(payload);
 
     const qbPayload = {
       search: this.promptForm.value.searchText,
