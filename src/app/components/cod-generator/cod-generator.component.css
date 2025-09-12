@@ -457,7 +457,7 @@ button[disabled] {
   }
 
   li::before {
-    content: counter(option-counter, upper-alpha) ')';
+    /* content: counter(option-counter, upper-alpha) ')'; */
     counter-increment: option-counter;
     position: absolute;
     left: 0;
