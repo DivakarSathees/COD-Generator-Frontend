@@ -288,6 +288,8 @@ export class CodGeneratorComponent implements OnInit {
       console.log(res.response.sessionId);
       // store sessionId in session storage
       sessionStorage.setItem('codSessionId', res.response.sessionId);
+      this.getAllSessions();
+
       // this.cods = res.response;
       this.cods = res.response.result.map((cod: any) => ({
         ...cod,
